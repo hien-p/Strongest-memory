@@ -30,6 +30,20 @@ jobs:
       - name: Enable Corepack (provides pnpm)
         run: corepack enable
 
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      # Build the React landing (apps/landing/) into apps/landing/dist/, then
+      # copy the built files into apps/web/ overwriting the static index.html.
+      # Existing static sub-pages (/verify, /metrics, /leaderboard, /logs) survive.
+      - name: Build React landing
+        run: pnpm --filter @strongest/landing build
+
+      - name: Stage built landing into apps/web/
+        run: |
+          cp -R apps/landing/dist/. apps/web/
+          ls -la apps/web/
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:

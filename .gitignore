@@ -26,6 +26,15 @@ out/
 *.tsbuildinfo
 .vercel
 
+# Vite emits the React landing into apps/landing/dist/ then CI copies into
+# apps/web/ at deploy time. Built artifacts are not source — keep out of git.
+apps/landing/dist/
+apps/landing/.vite/
+# apps/web/index.html and apps/web/assets/ are produced by `pnpm landing:stage`
+# and rebuilt fresh on every CI deploy. Hashes change per build, so don't track.
+apps/web/index.html
+apps/web/assets/
+
 # Wrangler / Cloudflare
 .wrangler/
 wrangler.toml.bak

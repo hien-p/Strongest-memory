@@ -19,6 +19,9 @@
     "contracts:deploy:aristotle": "pnpm --filter @strongest/contracts deploy:aristotle",
     "web:dev": "python3 -m http.server 8787 --directory apps/web",
     "web:deploy": "wrangler deploy",
+    "landing:dev": "pnpm --filter @strongest/landing dev",
+    "landing:build": "pnpm --filter @strongest/landing build",
+    "landing:stage": "pnpm landing:build && cp -R apps/landing/dist/. apps/web/",
     "oracle:dev": "cd apps/oracle && cargo run"
   },
   "devDependencies": {

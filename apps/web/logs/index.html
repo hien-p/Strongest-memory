@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="feat">feat</span>
+        </header>
+        <h3>VHS-aesthetic React landing (Vite + Tailwind v4) replaces static index</h3>
+        <p>New <code>apps/landing/</code> workspace: Vite + React 19 + TS + Tailwind v4. <code>App.tsx</code> renders a 600×800 social-card frame with a looping CloudFront video, animated SVG fractal-noise overlay, repeating scanline gradient, sweeping VHS glitch bar, RGB text-shadow glitch, liquid-glass button (mask-composite border ring + radial highlight), and staggered fade-rise entrance for the headline / subtext / CTA. Footer logo: Velorah® in Instrument Serif. Vite outputs to <code>apps/landing/dist/</code> (gitignored); the deploy workflow copies it into <code>apps/web/</code> overwriting <code>index.html</code> while preserving the <code>/verify</code>, <code>/metrics</code>, <code>/leaderboard</code>, <code>/logs</code> static sub-pages. Local dev: <code>pnpm landing:dev</code>.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="fix">fix</span>
         </header>
         <h3>Live on Cloudflare: rename worker to <code>strongest</code> + fix /logs/ path</h3>
