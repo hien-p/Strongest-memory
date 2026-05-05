@@ -4,7 +4,7 @@
 
 **Hackathon:** [0G APAC Hackathon](https://www.hackquest.io/hackathons/0G-APAC-Hackathon) · Track 1 (Agentic Infrastructure & OpenClaw Lab)
 **Status:** Day 1 of 11 (deadline 2026-05-16 23:59 UTC+8)
-**Demo:** TBD (Vercel deploy on Day 5)
+**Demo:** TBD (Cloudflare Workers — deploy-on-push to `main` via `.github/workflows/deploy.yml`)
 **Video:** TBD (Day 9)
 **Live contracts:** TBD (Galileo testnet on Day 1, Aristotle mainnet on Day 4)
 
@@ -50,7 +50,7 @@ See [`../openclaw-0g-hackathon/architecture/inft-design.md`](../openclaw-0g-hack
 graph TB
     subgraph User["User / Owner"]
         Wallet[EVM Wallet]
-        Browser[Next.js Frontend]
+        Browser[Static frontend<br/>Cloudflare Workers]
     end
 
     subgraph OpenClaw["OpenClaw Runtime (EC2)"]
@@ -89,6 +89,7 @@ Prerequisites: Node 20+, pnpm 10, Foundry, Rust (only for Hack B moonshot), an E
 ```bash
 git clone https://github.com/hien-p/Strongest-memory
 cd Strongest-memory
+./scripts/install-hooks.sh    # wires .githooks/ into git config
 pnpm install
 cp .env.example .env  # fill DEPLOYER_PRIVATE_KEY, RE_ENC_MASTER_KEY, etc.
 
@@ -99,10 +100,13 @@ pnpm contracts:test
 # Deploy stub contracts to Galileo testnet
 pnpm contracts:deploy:galileo
 
-# Run the frontend
-pnpm web:dev
-# → http://localhost:3000
+# Run the frontend (static, Cloudflare Workers)
+python3 -m http.server 8787 --directory apps/web
+# or: npx wrangler dev
+# → http://localhost:8787  (devlog at /logs/)
 ```
+
+Production deploy is fully automated — push to `main` triggers `.github/workflows/deploy.yml` which runs `wrangler deploy`. Requires `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets.
 
 Test wallet (read-only, pre-funded with sample iNFTs): TBD after Day 4 mainnet deploy.
 
@@ -111,16 +115,22 @@ Test wallet (read-only, pre-funded with sample iNFTs): TBD after Day 4 mainnet d
 ```
 strongest/
 ├── apps/
-│   ├── web/                   Next.js 15 + Tailwind v4 + RainbowKit (mint/run/transfer)
+│   ├── web/                   Static landing + mint/run/transfer (served by Cloudflare Workers)
+│   │   ├── index.html         Landing page
+│   │   └── public/logs/       Devlog — every commit adds a card here
 │   └── oracle/                Rust scaffold for Hack B WASM verifier (Day 8-9 moonshot only)
 ├── packages/
 │   ├── contracts/             Foundry workspace — AgentNFT + Verifier + RoyaltyHook
 │   ├── openclaw-bridge/       OpenClaw → 0G adapter (llm-gateway, state-sync, royalty-hook,
 │   │                          inft-registry, crypto, reencrypt-commitment)
 │   └── shared-types/          ZG_ARISTOTLE/ZG_GALILEO chain configs + agent types
-├── scripts/                   Deploy + mint + verify helpers
+├── scripts/                   Deploy helpers + install-hooks.sh
+├── .githooks/                 commit-msg (block Claude attribution) + pre-push (nudge /logs)
+├── .github/workflows/         deploy.yml (CF Workers) + commit-guard.yml
+├── wrangler.toml              Cloudflare Workers static-asset config
+├── CLAUDE.md                  Working rules for Claude Code in this repo
+├── CONTRIBUTING.md            Branch + commit + /logs convention
 ├── .env.example               All required env vars
-├── LOG.md                     Build log (chronological, Day 1 → Day 11)
 └── package.json               pnpm workspace root
 ```
 
@@ -147,7 +157,7 @@ Per HackQuest rules ("Teams may submit … an existing prototype that is further
 - All 0G integration code (Compute broker, Storage SDK, Chain contracts, .0g resolution)
 - AgentNFT fork + `RoyaltyHook` contract + Foundry workspace + tests
 - `reencrypt-commitment.ts` (the Hack A pattern — AES in `node:crypto` + Sealed Inference witness)
-- Frontend (Next.js 15 + Tailwind v4 + RainbowKit) with mint/run/transfer flows
+- Static frontend on Cloudflare Workers with mint/run/transfer flows + wagmi/viem in the browser
 
 ## Honest disclosures
 
