@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="fix">fix</span>
+        </header>
+        <h3>CI Deploy: pin wrangler as a root devDep so the action skips its self-install</h3>
+        <p>The first deploy after the React-landing rewire failed: <code>wrangler-action@v3</code> didn't find a local wrangler, tried <code>pnpm add wrangler@3.90.0</code>, and pnpm refused with <code>ERR_PNPM_ADDING_TO_ROOT</code> (workspace roots need <code>-w</code>). Fix: added <code>wrangler ^3.90.0</code> as a workspace-root devDependency. CI's <code>pnpm install --frozen-lockfile</code> now provides wrangler, and the action's existence check passes.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="feat">feat</span>
         </header>
         <h3>VHS-aesthetic React landing (Vite + Tailwind v4) replaces static index</h3>
