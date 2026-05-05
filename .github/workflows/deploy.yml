@@ -24,6 +24,12 @@ jobs:
         with:
           node-version: 20
 
+      # The repo declares a pnpm workspace (Foundry + TS packages live under
+      # packages/), so wrangler-action auto-detects pnpm via package.json's
+      # packageManager field. Corepack makes pnpm available on the runner.
+      - name: Enable Corepack (provides pnpm)
+        run: corepack enable
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:

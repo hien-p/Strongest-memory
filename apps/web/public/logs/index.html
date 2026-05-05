@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="fix">fix</span>
+        </header>
+        <h3>CI Deploy: enable corepack so wrangler-action can find pnpm</h3>
+        <p>First push triggered a Deploy run that failed with "Unable to locate executable file: pnpm" because the repo's <code>packageManager: pnpm@10.28.0</code> made <code>cloudflare/wrangler-action@v3</code> try to use pnpm on a vanilla runner. Added a <code>corepack enable</code> step before the wrangler-action call. <code>CLOUDFLARE_API_TOKEN</code> + <code>CLOUDFLARE_ACCOUNT_ID</code> repo secrets still need to be set for the deploy to actually publish.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="refactor">refactor</span>
         </header>
         <h3>Adopt template — drop Next.js, move to Cloudflare Workers static</h3>
