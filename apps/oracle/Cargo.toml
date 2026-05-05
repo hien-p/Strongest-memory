@@ -28,6 +28,6 @@ lto = true
 codegen-units = 1
 strip = true
 
-# Day 7: enable Phala dstack SDK for TEE attestation when running on confidential VM
-# [features]
-# tee = ["dep:dstack-sdk"]
+# NOTE 2026-05-05: this crate is now a Hack B (Day 8-9 moonshot) WASM verifier
+# scaffold ONLY. The Day 7 re-encryption flow runs in packages/openclaw-bridge
+# and uses Sealed Inference as the commitment-binder. See ./README.md.
