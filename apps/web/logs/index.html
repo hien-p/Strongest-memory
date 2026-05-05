@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="fix">fix</span>
+        </header>
+        <h3>Landing: responsive frame + functional Begin Journey + sub-page nav</h3>
+        <p>Two real bugs and one missing wire-up: the 600×800 frame overflowed any viewport shorter than ~860px, and the <code>-mt-[180px]</code> fixed-pixel content offset broke when the frame shrank. Replaced with: <code>width: min(600px, 92vw, calc(92vh*0.75))</code> + <code>aspect-[3/4]</code>, <code>container-type: inline-size</code> on the frame, and <code>clamp(min, Ncqi, max)</code> font sizing for the headline / subtext / button / footer. Content now positioned absolutely at <code>top-[18%]</code> and footer at <code>bottom-[5%]</code> — both scale with the frame. <strong>Begin Journey</strong> now links to <code>/verify</code> (the only fully-functional sub-page today). Added a subtle <code>verify · metrics · leaderboard · devlog</code> nav strip above the Velorah footer so judges can find the working pages without leaving the hero.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="docs">docs</span>
         </header>
         <h3>Landing subtext: from generic Velorah copy → strongest-aligned</h3>
