@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="fix">fix</span>
+        </header>
+        <h3>CI Test (TS): scope <code>pnpm test</code> away from contracts</h3>
+        <p>The TS job was running <code>pnpm -r test</code>, which recursively invoked every workspace's <code>test</code> script — including <code>packages/contracts</code> whose script is <code>forge test -vv</code>. The Foundry binary isn't on the TS runner. Switched the root <code>test</code> script to <code>pnpm --filter "!@strongest/contracts" -r test</code> so the TS job only runs vitest. The Solidity job (separate matrix entry) continues to run <code>forge test</code> with Foundry installed; both TS + Solidity + Rust jobs went green pre-fix except this one.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="docs">docs</span>
         </header>
         <h3>README: Vision + TAM + four-pillar differentiator section</h3>

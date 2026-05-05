@@ -12,7 +12,7 @@
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
+    "test": "pnpm --filter \"!@strongest/contracts\" -r test",
     "contracts:build": "pnpm --filter @strongest/contracts build",
     "contracts:test": "pnpm --filter @strongest/contracts test",
     "contracts:deploy:galileo": "pnpm --filter @strongest/contracts deploy:galileo",
