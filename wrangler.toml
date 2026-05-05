@@ -1,7 +1,7 @@
 # Cloudflare Workers — Static Assets
 # https://developers.cloudflare.com/workers/static-assets/
 
-name = "strongest-memory"
+name = "strongest"
 compatibility_date = "2026-05-01"
 
 # Serve everything in apps/web/ as static assets.

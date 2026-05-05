@@ -22,7 +22,7 @@ References to "Claude Code" *inside* this `CLAUDE.md` file are fine — they des
 
 ## Devlog convention — update `/logs` on every change
 
-`apps/web/public/logs/index.html` is the project devlog. **Every commit or PR that lands on `main` (or staging) must add a new card to that page.** This is not optional polish; it is part of the change.
+`apps/web/logs/index.html` is the project devlog. **Every commit or PR that lands on `main` (or staging) must add a new card to that page.** This is not optional polish; it is part of the change.
 
 Card format (copy the existing pattern in the file):
 

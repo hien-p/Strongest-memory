@@ -3,7 +3,7 @@
 # Skipped for branches whose only commits are docs/chore.
 
 remote="$1"
-logs_path="apps/web/public/logs/index.html"
+logs_path="apps/web/logs/index.html"
 zero="0000000000000000000000000000000000000000"
 
 while read local_ref local_sha remote_ref remote_sha; do

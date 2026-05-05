@@ -163,7 +163,7 @@ strongest/
 ├── apps/
 │   ├── web/                   Static landing + mint/run/transfer (served by Cloudflare Workers)
 │   │   ├── index.html         Landing page
-│   │   └── public/logs/       Devlog — every commit adds a card here
+│   │   └── logs/              Devlog — every commit adds a card here
 │   └── oracle/                Rust scaffold for Hack B WASM verifier (Day 8-9 moonshot only)
 ├── packages/
 │   ├── contracts/             Foundry workspace — AgentNFT + Verifier + RoyaltyHook
