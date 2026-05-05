@@ -44,8 +44,8 @@ export default function App() {
             className="font-sans text-white/80 rgb-text-glitch fade-rise mt-6 leading-relaxed"
             style={{ fontSize: '17px', maxWidth: '480px', animationDelay: '0.2s' }}
           >
-            We're designing tools for deep thinkers, bold creators, and quiet rebels. Amid the chaos, we build digital
-            spaces for sharp focus and inspired work.
+            For builders whose agents shouldn't die with the platform. Encrypted memory on 0G Storage, sealed inference
+            in TEE, royalties on every call. Own the brain, not the receipt.
           </p>
 
           <button
