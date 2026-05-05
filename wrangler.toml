@@ -1,0 +1,20 @@
+# Cloudflare Workers — Static Assets
+# https://developers.cloudflare.com/workers/static-assets/
+
+name = "REPLACE_ME"
+compatibility_date = "2026-05-01"
+
+# Serve everything in apps/web/ as static assets.
+# `not_found_handling = "single-page-application"` makes deep links work for SPAs.
+# Switch to "404-page" if you have a custom 404.html, or remove for plain static behavior.
+[assets]
+directory = "./apps/web"
+not_found_handling = "single-page-application"
+
+# Public, non-secret config goes here. Secrets: `npx wrangler secret put NAME`.
+# [vars]
+# PUBLIC_API_URL = "https://api.example.com"
+
+# Local dev defaults to :8787 (the wrangler default). Override with `wrangler dev --port`.
+[dev]
+port = 8787
