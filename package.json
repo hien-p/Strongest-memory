@@ -1,0 +1,27 @@
+{
+  "name": "strongest",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OpenClaw × 0G — every agent is a tradeable, encrypted, royalty-bearing iNFT (ERC-7857). Hackathon submission for 0G APAC Hackathon (Track 1).",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "contracts:build": "pnpm --filter @strongest/contracts build",
+    "contracts:test": "pnpm --filter @strongest/contracts test",
+    "contracts:deploy:galileo": "pnpm --filter @strongest/contracts deploy:galileo",
+    "contracts:deploy:aristotle": "pnpm --filter @strongest/contracts deploy:aristotle",
+    "web:dev": "pnpm --filter @strongest/web dev",
+    "oracle:dev": "cd apps/oracle && cargo run"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0"
+  }
+}

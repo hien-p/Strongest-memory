@@ -1,0 +1,21 @@
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+
+import { Providers } from './providers';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'strongest — every agent is an iNFT',
+  description:
+    'OpenClaw × 0G — sealed-inference brains, encrypted memory on 0G Storage, royalty-bearing ERC-7857 iNFTs.',
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}

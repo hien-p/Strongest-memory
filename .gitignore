@@ -1,0 +1,53 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Node
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Foundry
+packages/contracts/out/
+packages/contracts/cache/
+packages/contracts/broadcast/
+!packages/contracts/broadcast/**/run-*.json
+
+# Rust
+apps/oracle/target/
+apps/oracle/Cargo.lock
+
+# Local reference clones (use git submodules or pnpm patches if needed)
+packages/contracts/contracts-fork/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Vercel
+.vercel
+
+# Test outputs
+coverage/
