@@ -4,7 +4,7 @@
 
 **Hackathon:** [0G APAC Hackathon](https://www.hackquest.io/hackathons/0G-APAC-Hackathon) · Track 1 (Agentic Infrastructure & OpenClaw Lab)
 **Status:** Day 1 of 11 (deadline 2026-05-16 23:59 UTC+8)
-**Demo:** TBD (Cloudflare Workers — deploy-on-push to `main` via `.github/workflows/deploy.yml`)
+**Demo:** [strongest.pages.dev](https://strongest.pages.dev) (Cloudflare Pages — deploy-on-push to `main`)
 **Video:** TBD (Day 9)
 **Live contracts:** TBD (Galileo testnet on Day 1, Aristotle mainnet on Day 4)
 
@@ -78,7 +78,7 @@ See [`../openclaw-0g-hackathon/architecture/inft-design.md`](../openclaw-0g-hack
 graph TB
     subgraph User["User / Owner"]
         Wallet[EVM Wallet]
-        Browser[Static frontend<br/>Cloudflare Workers]
+        Browser[Static frontend<br/>Cloudflare Pages]
     end
 
     subgraph OpenClaw["OpenClaw Runtime (EC2)"]
@@ -146,7 +146,7 @@ pnpm contracts:test
 # Deploy stub contracts to Galileo testnet
 pnpm contracts:deploy:galileo
 
-# Run the frontend (static, Cloudflare Workers)
+# Run the frontend (static, Cloudflare Pages)
 python3 -m http.server 8787 --directory apps/web
 # or: npx wrangler dev
 # → http://localhost:8787  (devlog at /logs/)
@@ -161,7 +161,7 @@ Test wallet (read-only, pre-funded with sample iNFTs): TBD after Day 4 mainnet d
 ```
 strongest/
 ├── apps/
-│   ├── web/                   Static landing + mint/run/transfer (served by Cloudflare Workers)
+│   ├── web/                   Static landing + mint/run/transfer (served by Cloudflare Pages)
 │   │   ├── index.html         Landing page
 │   │   └── logs/              Devlog — every commit adds a card here
 │   └── oracle/                Rust scaffold for Hack B WASM verifier (Day 8-9 moonshot only)
@@ -174,7 +174,7 @@ strongest/
 ├── scripts/                   Deploy helpers + install-hooks.sh
 ├── .githooks/                 commit-msg (block Claude attribution) + pre-push (nudge /logs)
 ├── .github/workflows/         deploy.yml (CF Workers) + commit-guard.yml
-├── wrangler.toml              Cloudflare Workers static-asset config
+├── wrangler.toml              Cloudflare Pages static-asset config
 ├── CLAUDE.md                  Working rules for Claude Code in this repo
 ├── CONTRIBUTING.md            Branch + commit + /logs convention
 ├── .env.example               All required env vars
@@ -204,7 +204,7 @@ Per HackQuest rules ("Teams may submit … an existing prototype that is further
 - All 0G integration code (Compute broker, Storage SDK, Chain contracts, .0g resolution)
 - AgentNFT fork + `RoyaltyHook` contract + Foundry workspace + tests
 - `reencrypt-commitment.ts` (the Hack A pattern — AES in `node:crypto` + Sealed Inference witness)
-- Static frontend on Cloudflare Workers with mint/run/transfer flows + wagmi/viem in the browser
+- Static frontend on Cloudflare Pages with mint/run/transfer flows + wagmi/viem in the browser
 
 ## Honest disclosures
 

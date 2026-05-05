@@ -44,9 +44,12 @@ jobs:
           cp -R apps/landing/dist/. apps/web/
           ls -la apps/web/
 
-      - name: Deploy to Cloudflare Workers
+      - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # wrangler reads ./wrangler.toml; no extra args needed for static assets.
+          command: pages deploy apps/web --project-name=strongest --branch=main --commit-dirty=true
+          # Cloudflare Pages serves at https://strongest.pages.dev (clean URL —
+          # no account-subdomain segment unlike *.workers.dev). Project was
+          # created with `wrangler pages project create strongest --production-branch=main`.

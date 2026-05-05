@@ -88,6 +88,15 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="refactor">refactor</span>
+        </header>
+        <h3>Migrated to Cloudflare Pages → <code>strongest.pages.dev</code></h3>
+        <p>The <code>*.workers.dev</code> URL pattern bakes the account subdomain (<code>phanhoangvinhhien</code>, 17 chars) into every Worker URL. The dashboard "change subdomain" path is one-shot, and the API rejected a rename with <code>code 10036: Account already has an associated subdomain</code>. Workaround: migrated to Cloudflare Pages, which uses a clean <code>&lt;project&gt;.pages.dev</code> namespace with no account segment. Created a <code>strongest</code> Pages project, swapped <code>deploy.yml</code> from <code>wrangler deploy</code> to <code>wrangler pages deploy apps/web --project-name=strongest</code>. New URL: 21 chars, all 5 routes (<code>/</code>, <code>/logs/</code>, <code>/verify/</code>, <code>/metrics/</code>, <code>/leaderboard/</code>) returning 200.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="fix">fix</span>
         </header>
         <h3>CI Deploy: pin wrangler as a root devDep so the action skips its self-install</h3>
