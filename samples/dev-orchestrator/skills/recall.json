@@ -1,0 +1,20 @@
+{
+  "name": "recall",
+  "description": "Search the orchestrator's MEMORY.md for prior sessions matching a tag or keyword. Returns matching session summaries.",
+  "parameters": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Tag (e.g. 'foundry') or free-text keyword."
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 5
+      }
+    }
+  }
+}

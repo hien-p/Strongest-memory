@@ -1,0 +1,14 @@
+{
+  "name": "funding_snapshot",
+  "description": "Fetch the current funding rate from Pacifica for a perp symbol and pair it with a Binance spot reference.",
+  "parameters": {
+    "type": "object",
+    "required": ["symbol"],
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "enum": ["BTC-PERP", "ETH-PERP", "SOL-PERP"]
+      }
+    }
+  }
+}

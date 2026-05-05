@@ -1,0 +1,86 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ts:
+    name: TS — typecheck + vitest
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack (provides pnpm)
+        run: corepack enable
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (all workspaces)
+        run: pnpm -r typecheck
+
+      - name: Test (vitest)
+        run: pnpm -r test
+
+  contracts:
+    name: Solidity — forge test (incl. fuzz)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Build
+        working-directory: packages/contracts
+        run: forge build --sizes
+
+      - name: Test
+        working-directory: packages/contracts
+        run: forge test -vv
+
+  oracle:
+    name: Rust — cargo check + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            apps/oracle/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('apps/oracle/Cargo.toml') }}
+
+      - name: Build
+        working-directory: apps/oracle
+        run: cargo build
+
+      - name: Test
+        working-directory: apps/oracle
+        run: cargo test

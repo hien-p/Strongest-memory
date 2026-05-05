@@ -88,6 +88,51 @@
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="docs">docs</span>
+        </header>
+        <h3>README: Vision + TAM + four-pillar differentiator section</h3>
+        <p>Added a Vision/Market section ($50.31B AI agents TAM by 2030 per GVR; 45.8% CAGR) and a "How we differentiate" table calling out the four pillars: working royalty hook (16 Foundry tests, 256-run fuzz), transfer with memory persistence, live on-chain metrics + attestation viewer, and Sealed Inference as commitment-binder. Added a Test coverage table summarizing 35 passing tests across TS + Solidity. Added <code>samples/</code> to the repo layout.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="chore">chore</span>
+        </header>
+        <h3>CI: test workflow runs vitest + forge test + cargo build on every push</h3>
+        <p>New <code>.github/workflows/test.yml</code> with three jobs: TS (Node 20 + corepack + <code>pnpm -r typecheck</code> + <code>pnpm -r test</code>), Solidity (Foundry stable + <code>forge build --sizes</code> + <code>forge test -vv</code> with submodules: recursive checkout for OZ + forge-std), and Rust (cached cargo build). Runs on push to main and PRs. Independent of Commit Guard / Deploy.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="feat">feat</span>
+        </header>
+        <h3>Three new pages: /verify, /metrics, /leaderboard</h3>
+        <p><strong>/verify</strong> — paste a signature + (req_hash, res_hash, chatID); <code>ecrecover</code> the signing address (viem from CDN ESM, no bundler); check it matches the registered TEE oracle. <strong>/metrics</strong> — live counter of mints / transfers / inference runs / royalties paid via <code>getLogs</code> on the AgentNFT + RoyaltyHook contracts every 30s. <strong>/leaderboard</strong> — agents ranked by run count + royalty earned. All three go fully live the moment Aristotle deploy lands; placeholders today.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="feat">feat</span>
+        </header>
+        <h3>Three reference agents under samples/</h3>
+        <p><code>dev-orchestrator</code> (coding helper that routes to specialist sub-agents), <code>funding-arb</code> (Pacifica perp funding-rate watcher with calibrated user threshold), and <code>research-agent</code> (persistent technical researcher with citation memory — anchors the transfer-with-memory demo). Each has SOUL.md + MEMORY.md (seeded with realistic prior-session content, not Lorem ipsum) + skills/*.json.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
+          <span class="log-tag" data-tag="feat">feat</span>
+        </header>
+        <h3>Test suite: 35 passing tests across TS + Solidity</h3>
+        <p>Added vitest in <code>packages/openclaw-bridge/</code>: 13 tests for crypto.ts (HKDF determinism, AES round-trip across sizes, magic+version invariants, tamper detection, AAD binding) + 6 tests for reencrypt-commitment.ts (Hack A flow with mocked gateway, memory-persistence invariant, system-prompt shape). Expanded RoyaltyHook.t.sol from 4 → 11 tests including a 256-run fuzz on split math invariants. New Integration.t.sol (5 tests) deploys the full Verifier → AgentNFT impl → BeaconProxy → RoyaltyHook chain and asserts it matches Deploy.s.sol.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-05">
+        <header>
+          <time datetime="2026-05-05">2026-05-05</time>
           <span class="log-tag" data-tag="fix">fix</span>
         </header>
         <h3>CI Deploy: enable corepack so wrangler-action can find pnpm</h3>

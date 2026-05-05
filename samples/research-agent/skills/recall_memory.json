@@ -1,0 +1,20 @@
+{
+  "name": "recall_memory",
+  "description": "Search MEMORY.md for prior conclusions on a topic. Always run BEFORE doing fresh web research — if MEMORY contains a high-confidence answer, use it and skip the web fetch.",
+  "parameters": {
+    "type": "object",
+    "required": ["topic"],
+    "properties": {
+      "topic": {
+        "type": "string",
+        "description": "Topic, tag, or free-text search."
+      },
+      "min_confidence": {
+        "type": "string",
+        "enum": ["high", "medium", "low"],
+        "default": "medium",
+        "description": "Skip entries below this confidence level."
+      }
+    }
+  }
+}

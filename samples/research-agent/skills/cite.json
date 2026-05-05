@@ -1,0 +1,29 @@
+{
+  "name": "cite",
+  "description": "Format a (claim, source, access date, confidence) tuple as a structured citation suitable for inclusion in the response References section.",
+  "parameters": {
+    "type": "object",
+    "required": ["claim", "source_url", "access_date"],
+    "properties": {
+      "claim": {
+        "type": "string",
+        "description": "The factual statement being cited."
+      },
+      "source_url": {
+        "type": "string",
+        "format": "uri",
+        "description": "Primary source URL — paper PDF, GitHub README, RFC, blog, etc. Never a secondary aggregator."
+      },
+      "access_date": {
+        "type": "string",
+        "format": "date",
+        "description": "ISO date the source was last verified accessible."
+      },
+      "confidence": {
+        "type": "string",
+        "enum": ["high", "medium", "low"],
+        "default": "medium"
+      }
+    }
+  }
+}

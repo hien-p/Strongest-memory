@@ -76,4 +76,83 @@ contract RoyaltyHookTest is Test {
         vm.expectRevert(abi.encodeWithSelector(RoyaltyHook.InsufficientFee.selector, 0.5 ether, 1 ether));
         hook.payAndRun{value: 0.5 ether}(1, 1 ether);
     }
+
+    function test_PayAndRun_HonorsCustomBps() public {
+        // 12.34% royalty → 0.1234 ether out of 1 ether
+        nft.set(creator, creator, 1234);
+        uint256 fee = 1 ether;
+
+        vm.prank(runner);
+        hook.payAndRun{value: fee}(1, fee);
+
+        assertEq(creator.balance, 0.1234 ether, "creator gets bps share");
+        assertEq(treasury.balance, fee - 0.1234 ether, "platform gets remainder");
+    }
+
+    function test_PayAndRun_ZeroBps_AllToPlatform() public {
+        nft.set(creator, creator, 0);
+        uint256 fee = 1 ether;
+
+        vm.prank(runner);
+        hook.payAndRun{value: fee}(1, fee);
+
+        assertEq(creator.balance, 0, "creator gets nothing at 0 bps");
+        assertEq(treasury.balance, fee, "platform gets full fee");
+    }
+
+    function test_PayAndRun_HundredPctBps_AllToCreator() public {
+        nft.set(creator, creator, 10_000);
+        uint256 fee = 1 ether;
+
+        vm.prank(runner);
+        hook.payAndRun{value: fee}(1, fee);
+
+        assertEq(creator.balance, fee, "creator gets full fee at 10000 bps");
+        assertEq(treasury.balance, 0, "platform gets nothing");
+    }
+
+    function test_PayAndRun_EmitsInferenceRunEvent() public {
+        nft.set(creator, creator, 500);
+        uint256 fee = 2 ether;
+
+        vm.expectEmit(true, true, false, true);
+        emit RoyaltyHook.InferenceRun(42, runner, fee, 0.1 ether, creator);
+
+        vm.prank(runner);
+        hook.payAndRun{value: fee}(42, fee);
+    }
+
+    /// @dev Fuzz: for any reasonable fee + bps, royalty + platform amounts always sum to fee
+    ///      and never exceed it. This is the invariant that protects creators from rounding
+    ///      drift and the platform from overpayment.
+    function testFuzz_PayAndRun_SplitConservesValue(uint128 feeRaw, uint16 bpsRaw) public {
+        // Constrain to something the runner can fund and which exercises the math.
+        uint256 fee = uint256(feeRaw) % 100 ether + 1; // [1 wei, 100 ether]
+        uint256 bps = uint256(bpsRaw) % 10_001;        // [0, 10000]
+
+        nft.set(creator, creator, bps);
+        vm.deal(runner, fee);
+
+        uint256 creatorBefore = creator.balance;
+        uint256 treasuryBefore = treasury.balance;
+
+        vm.prank(runner);
+        hook.payAndRun{value: fee}(1, fee);
+
+        uint256 royaltyOut = creator.balance - creatorBefore;
+        uint256 platformOut = treasury.balance - treasuryBefore;
+
+        assertEq(royaltyOut + platformOut, fee, "split conserves value");
+        assertLe(royaltyOut, fee, "royalty never exceeds fee");
+    }
+
+    function test_RevertsOnConstruction_ZeroAgentNFT() public {
+        vm.expectRevert(bytes("Zero AgentNFT"));
+        new RoyaltyHook(address(0), treasury);
+    }
+
+    function test_RevertsOnConstruction_ZeroTreasury() public {
+        vm.expectRevert(bytes("Zero treasury"));
+        new RoyaltyHook(address(nft), address(0));
+    }
 }

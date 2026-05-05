@@ -1,0 +1,22 @@
+{
+  "name": "dispatch",
+  "description": "Route a sub-task to a specialist sub-agent. Returns the sub-agent's output as a structured object.",
+  "parameters": {
+    "type": "object",
+    "required": ["sub_agent", "task", "expected_shape"],
+    "properties": {
+      "sub_agent": {
+        "type": "string",
+        "enum": ["code-writer", "debugger", "reviewer", "tester", "searcher"]
+      },
+      "task": {
+        "type": "string",
+        "description": "One-sentence task description scoped tightly enough that the sub-agent can complete it without further clarification."
+      },
+      "expected_shape": {
+        "type": "string",
+        "description": "What we expect back — e.g. 'a unified diff', 'a list of file paths', 'a one-paragraph review'."
+      }
+    }
+  }
+}

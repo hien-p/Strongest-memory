@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attestation Viewer · strongest</title>
+  <meta name="description" content="Paste a Sealed Inference response payload + signature; recover the signing address; check it matches the registered TEE oracle." />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0a0a14; --fg: #f5f5f7; --muted: #a1a1aa;
+      --accent: #0ea5e9; --good: #22c55e; --bad: #ef4444;
+      --line: rgba(255,255,255,0.08);
+      --card-bg: rgba(255,255,255,0.03);
+      --code-bg: #11111b;
+    }
+    @media (prefers-color-scheme: light) {
+      :root { --bg: #fafaf9; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e5e5e3; --card-bg: #fff; --code-bg: #f1f1ee; }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--fg);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem 5rem; }
+    header.page { margin-bottom: 2rem; }
+    header.page h1 { font-size: 1.75rem; margin: 0 0 0.4rem; letter-spacing: -0.02em; }
+    header.page p { color: var(--muted); margin: 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--card-bg); border: 1px solid var(--line);
+      border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+    }
+    label {
+      display: block; font-size: 0.85rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+    textarea, input {
+      width: 100%; padding: 0.75rem; background: var(--code-bg);
+      color: var(--fg); border: 1px solid var(--line); border-radius: 6px;
+      font: 13px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    button {
+      background: var(--accent); color: white; border: 0;
+      padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600;
+      cursor: pointer; font-size: 0.95rem;
+    }
+    button:hover { opacity: 0.9; }
+
+    .result {
+      background: var(--code-bg); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1rem; margin-top: 1rem;
+      font: 13px/1.6 ui-monospace, monospace;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .result.ok    { border-color: var(--good); }
+    .result.bad   { border-color: var(--bad); }
+    .badge { display: inline-block; padding: 0.1em 0.5em; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge.ok   { background: var(--good); color: white; }
+    .badge.bad  { background: var(--bad); color: white; }
+
+    code { background: var(--code-bg); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.88em; }
+    nav.foot { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.95rem; display: flex; gap: 1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="page">
+      <h1>Attestation Viewer</h1>
+      <p>
+        Recover the signing address from a Sealed Inference response payload + signature.
+        If it matches the registered TEE oracle, the response provably came from a key
+        that was generated inside an Intel TDX + H100 enclave at provider boot.
+      </p>
+    </header>
+
+    <section class="card">
+      <label for="reqHash">Request hash (32-byte hex)</label>
+      <input id="reqHash" placeholder="0x..." />
+    </section>
+
+    <section class="card">
+      <label for="resHash">Response hash (32-byte hex)</label>
+      <input id="resHash" placeholder="0x..." />
+    </section>
+
+    <section class="card">
+      <label for="chatId">ChatID</label>
+      <input id="chatId" placeholder="returned in ZG-Res-Key header" />
+    </section>
+
+    <section class="card">
+      <label for="sig">Signature (65-byte hex)</label>
+      <textarea id="sig" placeholder="0x... (concat of r || s || v)"></textarea>
+    </section>
+
+    <section class="card">
+      <label for="oracle">Registered oracle address (from on-chain Verifier)</label>
+      <input id="oracle" placeholder="0x..." />
+      <button id="verify" style="margin-top:1rem">Verify</button>
+      <div id="result" class="result" hidden></div>
+    </section>
+
+    <p class="card" style="font-size:0.9rem; color: var(--muted);">
+      <strong>How this works:</strong> 0G's broker signs each Sealed Inference response with a key born inside the TEE.
+      The signed payload is <code>keccak256(req_hash || res_hash || chatID)</code>. We <code>ecrecover</code> the signing
+      address from <code>(r, s, v)</code> against that digest and check it matches the address registered as the oracle
+      on the on-chain Verifier. A match means: <em>the response provably came from this enclave</em>.
+    </p>
+
+    <nav class="foot">
+      <a href="/">← back</a>
+      <a href="/logs/">Devlog</a>
+      <a href="/metrics/">Metrics</a>
+      <a href="https://github.com/hien-p/Strongest-memory">GitHub</a>
+    </nav>
+  </main>
+
+  <script type="module">
+    // viem from CDN ESM — no bundler.
+    import { keccak256, recoverAddress, encodePacked, isAddress, isHex, getAddress } from 'https://esm.sh/viem@2.21.50';
+
+    const $ = (id) => document.getElementById(id);
+    const out = $('result');
+
+    function show(html, status) {
+      out.hidden = false;
+      out.className = 'result ' + (status === 'ok' ? 'ok' : status === 'bad' ? 'bad' : '');
+      out.innerHTML = html;
+    }
+
+    $('verify').addEventListener('click', async () => {
+      try {
+        const reqHash = $('reqHash').value.trim();
+        const resHash = $('resHash').value.trim();
+        const chatId  = $('chatId').value.trim();
+        const sig     = $('sig').value.trim();
+        const oracle  = $('oracle').value.trim();
+
+        if (!isHex(reqHash) || reqHash.length !== 66) throw new Error('reqHash must be 0x-prefixed 32-byte hex');
+        if (!isHex(resHash) || resHash.length !== 66) throw new Error('resHash must be 0x-prefixed 32-byte hex');
+        if (!isHex(sig)     || sig.length     !== 132) throw new Error('signature must be 0x-prefixed 65-byte hex');
+        if (!isAddress(oracle)) throw new Error('oracle must be a 20-byte address');
+
+        // Match exactly what the broker signs: keccak256(req_hash || res_hash || chatID_bytes)
+        const digest = keccak256(encodePacked(
+          ['bytes32', 'bytes32', 'string'],
+          [reqHash, resHash, chatId]
+        ));
+
+        const recovered = await recoverAddress({ hash: digest, signature: sig });
+        const match = getAddress(recovered) === getAddress(oracle);
+
+        const verdict = match
+          ? '<span class="badge ok">VERIFIED</span> Response came from the registered oracle enclave.'
+          : '<span class="badge bad">MISMATCH</span> Recovered address does NOT match the registered oracle. Reject.';
+        show(
+          [
+            verdict,
+            '',
+            'digest:    ' + digest,
+            'recovered: ' + getAddress(recovered),
+            'expected:  ' + getAddress(oracle),
+          ].join('\n'),
+          match ? 'ok' : 'bad'
+        );
+      } catch (err) {
+        show('Error: ' + (err.message ?? err), 'bad');
+      }
+    });
+  </script>
+</body>
+</html>
