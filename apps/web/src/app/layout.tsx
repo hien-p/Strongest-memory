@@ -10,6 +10,10 @@ export const metadata: Metadata = {
     'OpenClaw × 0G — sealed-inference brains, encrypted memory on 0G Storage, royalty-bearing ERC-7857 iNFTs.',
 };
 
+// Wagmi/RainbowKit reach for `localStorage` during render, so opt out of
+// static generation. Re-enable per-page once we have content that benefits.
+export const dynamic = 'force-dynamic';
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">

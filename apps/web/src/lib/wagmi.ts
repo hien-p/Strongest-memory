@@ -1,5 +1,6 @@
 import { defineChain } from 'viem';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import type { Config } from 'wagmi';
 
 export const aristotle = defineChain({
   id: 16661,
@@ -18,7 +19,7 @@ export const galileo = defineChain({
   testnet: true,
 });
 
-export const wagmiConfig = getDefaultConfig({
+export const wagmiConfig: Config = getDefaultConfig({
   appName: 'strongest',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? 'replace-me',
   chains: [aristotle, galileo],

@@ -33,8 +33,9 @@ export class INFTRegistry {
   }
 
   async getTokenIdForAgent(agentName: string): Promise<bigint | null> {
-    if (this.opts.spaceIdResolver) {
-      const id = await this.opts.spaceIdResolver.resolve(`${agentName}.0g`);
+    const resolver = this.opts.spaceIdResolver;
+    if (resolver) {
+      const id = await resolver.resolve(`${agentName}.0g`);
       if (id) return id;
     }
     if (this.opts.localIndexPath) {
@@ -45,7 +46,8 @@ export class INFTRegistry {
   }
 
   async getOwnerOf(tokenId: bigint): Promise<string> {
-    return (await this.nft.ownerOf(tokenId)) as string;
+    const fn = this.nft.getFunction('ownerOf');
+    return (await fn(tokenId)) as string;
   }
 
   private async loadLocal(): Promise<Map<string, bigint>> {

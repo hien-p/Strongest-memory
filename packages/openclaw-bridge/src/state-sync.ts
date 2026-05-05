@@ -63,7 +63,7 @@ export class StateSync {
 
     type Indexer = { upload(file: unknown, signer: unknown): Promise<{ rootHash: string; txHash: string }> };
 
-    const file = new sdk.ZgFile(encrypted);
+    const file = new sdk.ZgFile(encrypted.blob);
     const indexer = new sdk.Indexer(this.opts.indexerUrl);
     const { rootHash, txHash } = await indexer.upload(file, this.opts.signer);
 

@@ -26,7 +26,8 @@ export class RoyaltyClient {
   }
 
   async payAndRun(tokenId: bigint, fee: bigint): Promise<RoyaltyResult> {
-    const tx: ContractTransactionResponse = await this.contract.payAndRun(tokenId, fee, { value: fee });
+    const fn = this.contract.getFunction('payAndRun');
+    const tx: ContractTransactionResponse = await fn(tokenId, fee, { value: fee });
     const receipt = await tx.wait();
     if (!receipt) throw new Error('Royalty tx receipt missing');
 
