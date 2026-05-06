@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
+import { Bento } from '@/components/Bento';
 import StaggeredText from '@/components/react-bits/staggered-text';
 
 export default function Home() {
@@ -57,6 +58,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Section 02 — bento grid showcasing the four primitives */}
+      <Bento />
     </Layout>
   );
 }
