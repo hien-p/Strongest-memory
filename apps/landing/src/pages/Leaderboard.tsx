@@ -19,8 +19,22 @@ const AGENTS: Agent[] = [
     minted: true,
     txHash: '0x0efa55101cc1e7890b7fc951c0898e981a97c02fac354fb9a9cd7d162f08e737',
   },
-  { rank: 2, name: 'research-agent.0g', desc: 'persistent technical researcher', minted: false },
-  { rank: 3, name: 'funding-arb.0g', desc: 'Pacifica funding-rate watcher', minted: false },
+  {
+    rank: 2,
+    name: 'research-agent.0g',
+    desc: 'persistent technical researcher',
+    tokenId: 1,
+    minted: true,
+    txHash: '0xe5aac1af447fb191b8cc770b60e50333c501a9e02b48169c822efdf8b8fe5c97',
+  },
+  {
+    rank: 3,
+    name: 'funding-arb.0g',
+    desc: 'Pacifica funding-rate watcher',
+    tokenId: 2,
+    minted: true,
+    txHash: '0xd9e2dd8ab6116bbc4c2e2f9ab3b7b4f47bbabd0d58c4c595b3fa1218911c2af3',
+  },
 ];
 
 export default function Leaderboard() {

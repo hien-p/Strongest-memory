@@ -97,15 +97,16 @@ async function main() {
   const receipt = await tx.wait();
   if (!receipt) throw new Error('no receipt');
 
-  // Find the Transfer(0x0, owner, tokenId) event to extract tokenId
-  const transferTopic = ethers.id('Transfer(address,address,uint256)');
-  const transferLog = receipt.logs.find(
+  // ERC-7857 emits Minted(_tokenId, _creator, _owner, ...) — not the
+  // standard ERC-721 Transfer.
+  const mintedTopic = ethers.id('Minted(uint256,address,address,bytes32[],string[])');
+  const mintedLog = receipt.logs.find(
     (l) =>
       l.address.toLowerCase() === AGENT_NFT.toLowerCase() &&
-      l.topics[0] === transferTopic,
+      l.topics[0] === mintedTopic,
   );
-  if (!transferLog) throw new Error('no Transfer event in receipt');
-  const tokenId = BigInt(transferLog.topics[3]!);
+  if (!mintedLog) throw new Error('no Minted event in receipt');
+  const tokenId = BigInt(mintedLog.topics[1]!);
   console.log(`  tokenId:    ${tokenId}`);
   console.log(`  block:      ${receipt.blockNumber}`);
   console.log(`  gas used:   ${receipt.gasUsed}`);

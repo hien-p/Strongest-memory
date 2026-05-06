@@ -12,6 +12,7 @@ const SilkWaves = lazy(() => import('@/components/react-bits/silk-waves'));
 
 const NAV = [
   { to: '/verify', label: 'verify' },
+  { to: '/run', label: 'run' },
   { to: '/metrics', label: 'metrics' },
   { to: '/leaderboard', label: 'leaderboard' },
   { to: '/logs', label: 'devlog' },
