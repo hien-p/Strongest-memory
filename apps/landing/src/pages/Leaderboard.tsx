@@ -48,12 +48,12 @@ export default function Leaderboard() {
             Ranked by Sealed Inference run count and creator royalties earned.{' '}
             <code className="rb-code">RoyaltyHook</code> deployed on Galileo testnet at{' '}
             <a
-              href="https://chainscan-galileo.0g.ai/address/0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06"
+              href="https://chainscan-galileo.0g.ai/address/0xf7bd5BF8DbF796Ae3c2aBce5616bF181c9456cAa"
               target="_blank"
               rel="noreferrer"
               className="text-sky-400 hover:underline"
             >
-              0x971a…4c06
+              0xf7bd…6cAa
             </a>{' '}— ranking goes live as soon as the first <code className="rb-code">InferenceRun</code> event
             fires. Three reference agents seeded with realistic memory below.
           </p>

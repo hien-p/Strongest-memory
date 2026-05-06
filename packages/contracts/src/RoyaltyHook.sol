@@ -8,14 +8,17 @@ pragma solidity ^0.8.26;
 ///
 /// Royalty receiver and bps are fetched from the AgentNFT registry, where
 /// they're stored at mint time and may be updated by the token owner.
-interface IAgentNFTRoyalty {
+interface IAgentNFTOwner {
     function ownerOf(uint256 tokenId) external view returns (address);
-    function getRoyaltyInfo(uint256 tokenId) external view returns (address receiver, uint256 bps);
 }
 
 contract RoyaltyHook {
-    IAgentNFTRoyalty public immutable agentNFT;
+    IAgentNFTOwner public immutable agentNFT;
     address public immutable platformTreasury;
+    /// @dev Royalty share to the agent owner, in basis points. 500 = 5%.
+    /// Hardcoded for v1; v2 will read this per-tokenId from an AgentNFT
+    /// extension that exposes royaltyInfo().
+    uint256 public constant ROYALTY_BPS = 500;
 
     /// @dev   tokenId, runner (msg.sender), total fee paid, royalty share routed to creator
     event InferenceRun(
@@ -32,24 +35,19 @@ contract RoyaltyHook {
     constructor(address agentNFTAddress, address platformTreasuryAddress) {
         require(agentNFTAddress != address(0), "Zero AgentNFT");
         require(platformTreasuryAddress != address(0), "Zero treasury");
-        agentNFT = IAgentNFTRoyalty(agentNFTAddress);
+        agentNFT = IAgentNFTOwner(agentNFTAddress);
         platformTreasury = platformTreasuryAddress;
     }
 
-    /// @notice Pay a fee, route royaltyBps to creator, remainder to platform treasury.
+    /// @notice Pay a fee, route 5% to the iNFT's current owner, remainder to platform.
     /// @param  tokenId  The iNFT being invoked
     /// @param  fee      The total fee for this inference call (must equal msg.value)
     /// @return ok       true on success (reverts otherwise)
     function payAndRun(uint256 tokenId, uint256 fee) external payable returns (bool ok) {
         if (msg.value < fee) revert InsufficientFee(msg.value, fee);
 
-        (address receiver, uint256 bps) = agentNFT.getRoyaltyInfo(tokenId);
-        // Default to token owner if no explicit royalty receiver set.
-        if (receiver == address(0)) {
-            receiver = agentNFT.ownerOf(tokenId);
-        }
-
-        uint256 royalty = (fee * bps) / 10_000;
+        address receiver = agentNFT.ownerOf(tokenId);
+        uint256 royalty = (fee * ROYALTY_BPS) / 10_000;
         uint256 toPlatform = fee - royalty;
 
         if (royalty > 0) {

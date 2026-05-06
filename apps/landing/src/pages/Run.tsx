@@ -12,7 +12,7 @@ const galileo = defineChain({
   testnet: true,
 });
 
-const ROYALTY_HOOK = '0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06' as const;
+const ROYALTY_HOOK = '0xf7bd5BF8DbF796Ae3c2aBce5616bF181c9456cAa' as const;
 
 const ROYALTY_ABI = [
   {

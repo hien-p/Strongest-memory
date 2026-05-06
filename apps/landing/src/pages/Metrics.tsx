@@ -16,7 +16,7 @@ const galileo = defineChain({
 
 // Deployed 2026-05-06 on Galileo via forge script Deploy.s.sol.
 const AGENT_NFT = '0x32F18767a2b8773CA76D5D09D2B4339454d46131' as const;
-const ROYALTY = '0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06' as const;
+const ROYALTY = '0xf7bd5BF8DbF796Ae3c2aBce5616bF181c9456cAa' as const;
 const CHAIN = galileo;
 
 // ERC-7857 has its own event names (Minted / Transferred) that don't match
@@ -108,7 +108,7 @@ export default function Metrics() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat label="Agents minted" value={stats?.mints} sub="ERC-7857 iNFTs on Aristotle" />
+          <Stat label="Agents minted" value={stats?.mints} sub="ERC-7857 iNFTs on Galileo" />
           <Stat label="Transfers" value={stats?.transfers} sub="re-encryption flows completed" />
           <Stat label="Inference calls" value={stats?.runs} sub="Sealed Inference w/ RA report" />
           <Stat
@@ -120,11 +120,12 @@ export default function Metrics() {
 
         <section className="rb-card mt-6 text-sm leading-relaxed text-white/65">
           <strong className="text-white">Where the numbers come from.</strong>{' '}
-          <code className="rb-code">AgentNFT.Transfer(from, to, tokenId)</code> on Aristotle (chain 16661) — counts
-          mints (when <code className="rb-code">from = 0x0</code>) and transfers (otherwise).{' '}
-          <code className="rb-code">RoyaltyHook.InferenceRun</code> counts paid inference calls and totals creator
-          royalties. Both queried via <code className="rb-code">viem</code>'s <code className="rb-code">getLogs</code>{' '}
-          against <code className="rb-code">https://evmrpc.0g.ai</code>; refresh every 30s.
+          <code className="rb-code">AgentNFT.Minted(_tokenId, _creator, _owner, ...)</code> on Galileo (chain 16602)
+          counts mints. <code className="rb-code">AgentNFT.Transferred(_tokenId, _from, _to)</code> counts re-encryption
+          flows. <code className="rb-code">RoyaltyHook.InferenceRun</code> counts paid inference calls and totals
+          creator royalties (5% of each fee). Both queried via <code className="rb-code">viem</code>'s{' '}
+          <code className="rb-code">getLogs</code> against <code className="rb-code">https://evmrpc-testnet.0g.ai</code>;
+          refresh every 30s.
         </section>
       </main>
     </Layout>

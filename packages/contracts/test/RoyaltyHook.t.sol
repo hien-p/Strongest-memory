@@ -2,25 +2,20 @@
 pragma solidity ^0.8.26;
 
 import {Test, console} from "forge-std/Test.sol";
-import {RoyaltyHook, IAgentNFTRoyalty} from "../src/RoyaltyHook.sol";
+import {RoyaltyHook, IAgentNFTOwner} from "../src/RoyaltyHook.sol";
 
-contract MockAgentNFT is IAgentNFTRoyalty {
+contract MockAgentNFT is IAgentNFTOwner {
     address public owner;
-    address public royaltyReceiver;
-    uint256 public royaltyBps;
 
-    function set(address owner_, address receiver_, uint256 bps_) external {
+    /// Backwards-compat for tests that used to set receiver/bps separately.
+    /// The hook now hardcodes ROYALTY_BPS = 500 and uses ownerOf as receiver,
+    /// so only `owner_` is honored — the other args are ignored.
+    function set(address owner_, address /* receiver_ */, uint256 /* bps_ */) external {
         owner = owner_;
-        royaltyReceiver = receiver_;
-        royaltyBps = bps_;
     }
 
     function ownerOf(uint256) external view returns (address) {
         return owner;
-    }
-
-    function getRoyaltyInfo(uint256) external view returns (address, uint256) {
-        return (royaltyReceiver, royaltyBps);
     }
 }
 
@@ -77,38 +72,8 @@ contract RoyaltyHookTest is Test {
         hook.payAndRun{value: 0.5 ether}(1, 1 ether);
     }
 
-    function test_PayAndRun_HonorsCustomBps() public {
-        // 12.34% royalty → 0.1234 ether out of 1 ether
-        nft.set(creator, creator, 1234);
-        uint256 fee = 1 ether;
-
-        vm.prank(runner);
-        hook.payAndRun{value: fee}(1, fee);
-
-        assertEq(creator.balance, 0.1234 ether, "creator gets bps share");
-        assertEq(treasury.balance, fee - 0.1234 ether, "platform gets remainder");
-    }
-
-    function test_PayAndRun_ZeroBps_AllToPlatform() public {
-        nft.set(creator, creator, 0);
-        uint256 fee = 1 ether;
-
-        vm.prank(runner);
-        hook.payAndRun{value: fee}(1, fee);
-
-        assertEq(creator.balance, 0, "creator gets nothing at 0 bps");
-        assertEq(treasury.balance, fee, "platform gets full fee");
-    }
-
-    function test_PayAndRun_HundredPctBps_AllToCreator() public {
-        nft.set(creator, creator, 10_000);
-        uint256 fee = 1 ether;
-
-        vm.prank(runner);
-        hook.payAndRun{value: fee}(1, fee);
-
-        assertEq(creator.balance, fee, "creator gets full fee at 10000 bps");
-        assertEq(treasury.balance, 0, "platform gets nothing");
+    function test_RoyaltyBpsConstant() public view {
+        assertEq(hook.ROYALTY_BPS(), 500, "5% hardcoded");
     }
 
     function test_PayAndRun_EmitsInferenceRunEvent() public {
@@ -122,15 +87,11 @@ contract RoyaltyHookTest is Test {
         hook.payAndRun{value: fee}(42, fee);
     }
 
-    /// @dev Fuzz: for any reasonable fee + bps, royalty + platform amounts always sum to fee
-    ///      and never exceed it. This is the invariant that protects creators from rounding
-    ///      drift and the platform from overpayment.
-    function testFuzz_PayAndRun_SplitConservesValue(uint128 feeRaw, uint16 bpsRaw) public {
-        // Constrain to something the runner can fund and which exercises the math.
+    /// @dev Fuzz: for any fee, royalty + platform amounts always sum to fee
+    ///      and never exceed it. Bps is hardcoded at 500 in v1.
+    function testFuzz_PayAndRun_SplitConservesValue(uint128 feeRaw) public {
         uint256 fee = uint256(feeRaw) % 100 ether + 1; // [1 wei, 100 ether]
-        uint256 bps = uint256(bpsRaw) % 10_001;        // [0, 10000]
-
-        nft.set(creator, creator, bps);
+        nft.set(creator, address(0), 0);               // owner = creator
         vm.deal(runner, fee);
 
         uint256 creatorBefore = creator.balance;
@@ -144,6 +105,7 @@ contract RoyaltyHookTest is Test {
 
         assertEq(royaltyOut + platformOut, fee, "split conserves value");
         assertLe(royaltyOut, fee, "royalty never exceeds fee");
+        assertEq(royaltyOut, (fee * 500) / 10_000, "5% of fee");
     }
 
     function test_RevertsOnConstruction_ZeroAgentNFT() public {
