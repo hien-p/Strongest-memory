@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import { keccak256, recoverAddress, encodePacked, isAddress, isHex, getAddress } from 'viem';
+import { keccak256, recoverAddress, encodePacked, isAddress, isHex, getAddress, serializeSignature } from 'viem';
+import { privateKeyToAccount, sign } from 'viem/accounts';
 import { Layout } from '@/components/Layout';
 import { RouteBackground } from '@/components/RouteBackground';
+
+// Demo-only key. Used solely to generate a valid signature for the
+// "Fill demo values" button so judges can click through end-to-end.
+// NEVER hold real funds at this address.
+const DEMO_PK = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d' as const;
 
 export default function Verify() {
   const [reqHash, setReqHash] = useState('');
@@ -11,12 +17,19 @@ export default function Verify() {
   const [oracle, setOracle] = useState('');
   const [result, setResult] = useState<{ status: 'ok' | 'bad'; html: string } | null>(null);
 
-  function fillDemo() {
-    setReqHash('0x' + 'aa'.repeat(32));
-    setResHash('0x' + 'bb'.repeat(32));
-    setChatId('chat-demo-001');
-    setSig('0x' + '11'.repeat(64) + '1b');
-    setOracle('0x000000000000000000000000000000000000dEaD');
+  async function fillDemo() {
+    // Generate a real signed payload so "Recover & verify" lands VERIFIED.
+    const reqHashD = ('0x' + 'aa'.repeat(32)) as `0x${string}`;
+    const resHashD = ('0x' + 'bb'.repeat(32)) as `0x${string}`;
+    const chatIdD = 'chat-demo-001';
+    const account = privateKeyToAccount(DEMO_PK);
+    const digest = keccak256(encodePacked(['bytes32', 'bytes32', 'string'], [reqHashD, resHashD, chatIdD]));
+    const sigObj = await sign({ hash: digest, privateKey: DEMO_PK });
+    setReqHash(reqHashD);
+    setResHash(resHashD);
+    setChatId(chatIdD);
+    setSig(serializeSignature(sigObj));
+    setOracle(account.address);
     setResult(null);
   }
 
