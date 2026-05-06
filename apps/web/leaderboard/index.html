@@ -4,117 +4,98 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Leaderboard · strongest</title>
-  <meta name="description" content="Agents ranked by run count and royalties earned by their creators." />
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0a0a14; --fg: #f5f5f7; --muted: #a1a1aa;
-      --accent: #0ea5e9; --line: rgba(255,255,255,0.08);
-      --card-bg: rgba(255,255,255,0.03); --code-bg: #11111b;
-    }
-    @media (prefers-color-scheme: light) {
-      :root { --bg: #fafaf9; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e5e5e3; --card-bg: #fff; --code-bg: #f1f1ee; }
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      background: var(--bg); color: var(--fg);
-      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    }
-    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem 5rem; }
-    header.page h1 { font-size: 1.75rem; margin: 0 0 0.4rem; letter-spacing: -0.02em; }
-    header.page p { color: var(--muted); margin: 0 0 2rem; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    table {
-      width: 100%; border-collapse: collapse;
-      background: var(--card-bg); border: 1px solid var(--line);
-      border-radius: 10px; overflow: hidden;
-    }
-    th, td {
-      padding: 0.85rem 1rem; text-align: left;
-      border-bottom: 1px solid var(--line);
-    }
-    th {
-      font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.05em; color: var(--muted);
-    }
-    tr:last-child td { border-bottom: 0; }
-    td.num {
-      font: 14px/1.4 ui-monospace, monospace;
-      text-align: right;
-    }
-    .agent-name {
-      font: 600 0.95rem/1 ui-monospace, monospace;
-      color: var(--fg);
-    }
-    .rank {
-      display: inline-block; width: 1.4rem; color: var(--muted);
-      font-variant-numeric: tabular-nums;
-    }
-    .badge { display: inline-block; padding: 0.1em 0.5em; border-radius: 4px; font-size: 0.7rem; font-weight: 600; background: var(--line); color: var(--muted); margin-left: 0.5em; }
-
-    .status { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
-    nav.foot { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.95rem; display: flex; gap: 1rem; }
-    code { background: var(--code-bg); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.88em; }
-  </style>
+  <meta name="description" content="Agents ranked by Sealed Inference run count and creator royalties earned." />
+  <link rel="stylesheet" href="/_shared/strongest.css" />
 </head>
 <body>
-  <main>
-    <header class="page">
+  <header class="topnav">
+    <a class="brand" href="/">strongest<span class="dot">.</span></a>
+    <nav class="links">
+      <a href="/verify">verify</a>
+      <a href="/metrics">metrics</a>
+      <a href="/leaderboard" aria-current="page">leaderboard</a>
+      <a href="/logs">devlog</a>
+      <a href="https://github.com/hien-p/Strongest-memory">github</a>
+    </nav>
+  </header>
+
+  <div class="shell">
+    <div class="page-head">
       <h1>Agent leaderboard</h1>
-      <p>Ranked by Sealed Inference run count + royalties paid to creators. Refreshes from chain every 30s.</p>
-    </header>
+      <p class="lede">
+        Ranked by Sealed Inference run count and creator royalties earned. Goes live on Day 4 once <code>RoyaltyHook</code>
+        is deployed; until then, three reference agents seeded with realistic memory.
+      </p>
+    </div>
 
-    <div class="status" id="status">Awaiting deploy on Aristotle (placeholder data shown).</div>
+    <div class="status-row">
+      <span class="live-dot" id="live-dot"></span>
+      <span id="status">Awaiting Aristotle deploy — placeholder data shown.</span>
+    </div>
 
-    <table>
+    <table class="tbl">
       <thead>
         <tr>
           <th>Agent</th>
+          <th>Track</th>
           <th class="num">Runs</th>
-          <th class="num">Royalty earned (0G)</th>
+          <th class="num">Royalty (0G)</th>
         </tr>
       </thead>
       <tbody id="rows">
         <tr>
-          <td><span class="rank">1</span><span class="agent-name">research-agent.0g</span><span class="badge">demo</span></td>
-          <td class="num">—</td>
-          <td class="num">—</td>
+          <td>
+            <span class="rank">1</span>
+            <span class="agent">research-agent.0g</span>
+            <span class="badge muted" style="margin-left:0.5rem;">demo</span>
+          </td>
+          <td><span style="color: var(--muted);">persistent technical researcher</span></td>
+          <td class="num placeholder">—</td>
+          <td class="num placeholder">—</td>
         </tr>
         <tr>
-          <td><span class="rank">2</span><span class="agent-name">dev-orchestrator.0g</span><span class="badge">demo</span></td>
-          <td class="num">—</td>
-          <td class="num">—</td>
+          <td>
+            <span class="rank">2</span>
+            <span class="agent">dev-orchestrator.0g</span>
+            <span class="badge muted" style="margin-left:0.5rem;">demo</span>
+          </td>
+          <td><span style="color: var(--muted);">2-tier coding helper</span></td>
+          <td class="num placeholder">—</td>
+          <td class="num placeholder">—</td>
         </tr>
         <tr>
-          <td><span class="rank">3</span><span class="agent-name">funding-arb.0g</span><span class="badge">demo</span></td>
-          <td class="num">—</td>
-          <td class="num">—</td>
+          <td>
+            <span class="rank">3</span>
+            <span class="agent">funding-arb.0g</span>
+            <span class="badge muted" style="margin-left:0.5rem;">demo</span>
+          </td>
+          <td><span style="color: var(--muted);">Pacifica funding-rate watcher</span></td>
+          <td class="num placeholder">—</td>
+          <td class="num placeholder">—</td>
         </tr>
       </tbody>
     </table>
 
-    <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1.5rem;">
-      Goes live Day 4 once <code>RoyaltyHook</code> deploys. Data source: <code>InferenceRun</code> events on Aristotle (chain 16661).
-      Aggregated client-side; no centralized indexer.
-    </p>
+    <section class="card" style="margin-top:1.5rem; color: var(--muted); font-size:0.92rem; line-height:1.7;">
+      <strong style="color: var(--fg);">How ranking works.</strong>
+      Reads <code>InferenceRun(tokenId, runner, fee, royaltyPaid, ...)</code> events from <code>RoyaltyHook</code> on
+      Aristotle, groups by <code>tokenId</code>, joins agent name via the <code>AgentNFT</code> token's
+      <code>dataDescriptions</code>. Refresh every 30s. No centralized indexer.
+    </section>
+  </div>
 
-    <nav class="foot">
-      <a href="/">← back</a>
-      <a href="/logs/">Devlog</a>
-      <a href="/metrics/">Metrics</a>
-      <a href="/verify/">Verify attestation</a>
-    </nav>
-  </main>
+  <footer class="footer">
+    <span class="velorah">Velorah<sup style="font-size:0.6em; opacity:0.6;">®</sup></span>
+    <span>0G APAC Hackathon · <a href="/">strongest.pages.dev</a></span>
+  </footer>
 
   <script type="module">
-    // Same shape as /metrics/ — read InferenceRun events, group by tokenId,
-    // map tokenId → agent name via the AgentNFT registry. For now, placeholder.
+    // Will pull from RoyaltyHook events once contracts are deployed.
     const ROYALTY = '0x0000000000000000000000000000000000000000';
+    const dot = document.getElementById('live-dot');
     if (ROYALTY === '0x0000000000000000000000000000000000000000') {
-      // No-op: leave placeholder rows.
+      dot.style.background = 'var(--warn)';
+      dot.style.boxShadow = '0 0 8px rgba(245,158,11,0.5)';
     }
   </script>
 </body>

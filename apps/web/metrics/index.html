@@ -3,64 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Metrics · strongest</title>
-  <meta name="description" content="Live on-chain counters: mints, transfers, royalty paid to creators, RA reports verified." />
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0a0a14; --fg: #f5f5f7; --muted: #a1a1aa;
-      --accent: #0ea5e9; --accent-2: #a855f7;
-      --line: rgba(255,255,255,0.08); --card-bg: rgba(255,255,255,0.03);
-    }
-    @media (prefers-color-scheme: light) {
-      :root { --bg: #fafaf9; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e5e5e3; --card-bg: #fff; }
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      background: var(--bg); color: var(--fg);
-      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    }
-    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem 5rem; }
-    header.page h1 { font-size: 1.75rem; margin: 0 0 0.4rem; letter-spacing: -0.02em; }
-    header.page p { color: var(--muted); margin: 0 0 2.5rem; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat {
-      background: var(--card-bg); border: 1px solid var(--line);
-      border-radius: 12px; padding: 1.5rem;
-    }
-    .stat .label {
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
-    }
-    .stat .value {
-      font: 600 2.25rem/1.1 ui-monospace, "SF Mono", Menlo, monospace;
-      letter-spacing: -0.02em;
-      color: var(--fg);
-    }
-    .stat .sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
-
-    .live { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 0.5rem; animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .status { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
-
-    nav.foot { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.95rem; display: flex; gap: 1rem; }
-    code { background: var(--line); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.88em; }
-  </style>
+  <title>Live metrics · strongest</title>
+  <meta name="description" content="On-chain mints, transfers, inference calls, and royalty payouts streamed from the Aristotle AgentNFT + RoyaltyHook contracts." />
+  <link rel="stylesheet" href="/_shared/strongest.css" />
 </head>
 <body>
-  <main>
-    <header class="page">
+  <header class="topnav">
+    <a class="brand" href="/">strongest<span class="dot">.</span></a>
+    <nav class="links">
+      <a href="/verify">verify</a>
+      <a href="/metrics" aria-current="page">metrics</a>
+      <a href="/leaderboard">leaderboard</a>
+      <a href="/logs">devlog</a>
+      <a href="https://github.com/hien-p/Strongest-memory">github</a>
+    </nav>
+  </header>
+
+  <div class="shell">
+    <div class="page-head">
       <h1>Live metrics</h1>
-      <p>On-chain counters fetched from the Aristotle <code>AgentNFT</code> + <code>RoyaltyHook</code> contracts.</p>
-    </header>
+      <p class="lede">
+        Counters fetched directly from the Aristotle <code>AgentNFT</code> + <code>RoyaltyHook</code> contracts via a public
+        0G RPC endpoint. No centralized indexer; the page reads <code>Transfer</code> and <code>InferenceRun</code> events
+        and aggregates client-side.
+      </p>
+    </div>
 
-    <div class="status"><span class="live"></span><span id="status-text">Loading…</span></div>
+    <div class="status-row">
+      <span class="live-dot" id="live-dot"></span>
+      <span id="status-text">Connecting…</span>
+    </div>
 
-    <div class="grid">
+    <div class="grid-stats">
       <div class="stat">
         <div class="label">Agents minted</div>
         <div class="value" id="m-mints">—</div>
@@ -69,37 +43,36 @@
       <div class="stat">
         <div class="label">Transfers</div>
         <div class="value" id="m-transfers">—</div>
-        <div class="sub">Re-encryption flows completed</div>
+        <div class="sub">re-encryption flows completed</div>
       </div>
       <div class="stat">
         <div class="label">Inference calls</div>
         <div class="value" id="m-runs">—</div>
-        <div class="sub">Sealed Inference requests with RA</div>
+        <div class="sub">Sealed Inference w/ RA report</div>
       </div>
       <div class="stat">
         <div class="label">Royalties paid</div>
         <div class="value" id="m-royalty">—</div>
-        <div class="sub">Total 0G routed to creators</div>
+        <div class="sub">total 0G routed to creators</div>
       </div>
     </div>
 
-    <p style="color: var(--muted); font-size: 0.9rem;">
-      Once contracts deploy on Day 4, this page reads <code>InferenceRun</code> events from <code>RoyaltyHook</code> and
-      <code>Transfer</code> events from <code>AgentNFT</code> via a public 0G RPC endpoint, no indexer needed. Updates every 30s.
-    </p>
+    <section class="card" style="color: var(--muted); font-size: 0.92rem; line-height: 1.7;">
+      <strong style="color: var(--fg);">Where the numbers come from.</strong>
+      <code>AgentNFT.Transfer(from, to, tokenId)</code> on Aristotle (chain 16661) — counts mints (when <code>from = 0x0</code>)
+      and transfers (otherwise). <code>RoyaltyHook.InferenceRun(tokenId, runner, fee, royaltyPaid, royaltyReceiver)</code>
+      counts paid inference calls and totals creator royalties. Both queried via <code>viem</code>'s <code>getLogs</code>
+      against <code>https://evmrpc.0g.ai</code>; refresh every 30s.
+    </section>
+  </div>
 
-    <nav class="foot">
-      <a href="/">← back</a>
-      <a href="/logs/">Devlog</a>
-      <a href="/leaderboard/">Leaderboard</a>
-      <a href="/verify/">Verify attestation</a>
-    </nav>
-  </main>
+  <footer class="footer">
+    <span class="velorah">Velorah<sup style="font-size:0.6em; opacity:0.6;">®</sup></span>
+    <span>0G APAC Hackathon · <a href="/">strongest.pages.dev</a></span>
+  </footer>
 
   <script type="module">
-    // viem from CDN. Will go live the moment NEXT_PUBLIC_AGENT_NFT_ADDRESS + ROYALTY_HOOK_ADDRESS
-    // are baked into this page (Day 4-5). For now, show "—" + the explanatory note above.
-    import { createPublicClient, http, defineChain, formatEther } from 'https://esm.sh/viem@2.21.50';
+    import { createPublicClient, http, defineChain, formatEther, parseAbiItem } from 'https://esm.sh/viem@2.21.50';
 
     const aristotle = defineChain({
       id: 16661,
@@ -108,67 +81,44 @@
       rpcUrls: { default: { http: ['https://evmrpc.0g.ai'] } },
     });
 
-    // TODO Day 4: bake these in after deploy
+    // Filled in after Day-4 deploy. Until then, the page shows "—" + a status note.
     const AGENT_NFT  = '0x0000000000000000000000000000000000000000';
     const ROYALTY    = '0x0000000000000000000000000000000000000000';
 
-    const status = document.getElementById('status-text');
     const $ = (id) => document.getElementById(id);
+    const status = $('status-text');
+    const dot = $('live-dot');
 
     if (AGENT_NFT === '0x0000000000000000000000000000000000000000') {
-      status.textContent = 'Contracts not yet deployed on Aristotle. Counters go live Day 4 of the build.';
-      $('m-mints').textContent = '—';
-      $('m-transfers').textContent = '—';
-      $('m-runs').textContent = '—';
-      $('m-royalty').textContent = '— 0G';
+      status.textContent = 'Contracts not yet deployed on Aristotle. Counters go live on Day 4.';
+      dot.style.background = 'var(--warn)';
+      dot.style.boxShadow = '0 0 8px rgba(245,158,11,0.5)';
     } else {
       const client = createPublicClient({ chain: aristotle, transport: http() });
+      const TRANSFER = parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)');
+      const RUN      = parseAbiItem('event InferenceRun(uint256 indexed tokenId, address indexed runner, uint256 fee, uint256 royaltyPaid, address royaltyReceiver)');
+      const ZERO = '0x0000000000000000000000000000000000000000';
+
       async function refresh() {
         try {
-          // Mints: count Transfer events from address(0)
-          const mintLogs = await client.getLogs({
-            address: AGENT_NFT,
-            event: { type: 'event', name: 'Transfer', inputs: [
-              { name: 'from',    type: 'address', indexed: true },
-              { name: 'to',      type: 'address', indexed: true },
-              { name: 'tokenId', type: 'uint256', indexed: true },
-            ]},
-            args: { from: '0x0000000000000000000000000000000000000000' },
-            fromBlock: 0n,
-          });
-          const transferLogs = await client.getLogs({
-            address: AGENT_NFT,
-            event: { type: 'event', name: 'Transfer', inputs: [
-              { name: 'from',    type: 'address', indexed: true },
-              { name: 'to',      type: 'address', indexed: true },
-              { name: 'tokenId', type: 'uint256', indexed: true },
-            ]},
-            fromBlock: 0n,
-          });
-          const royaltyLogs = await client.getLogs({
-            address: ROYALTY,
-            event: { type: 'event', name: 'InferenceRun', inputs: [
-              { name: 'tokenId',         type: 'uint256', indexed: true },
-              { name: 'runner',          type: 'address', indexed: true },
-              { name: 'fee',             type: 'uint256', indexed: false },
-              { name: 'royaltyPaid',     type: 'uint256', indexed: false },
-              { name: 'royaltyReceiver', type: 'address', indexed: false },
-            ]},
-            fromBlock: 0n,
-          });
-
+          const [mintLogs, allTransferLogs, royaltyLogs] = await Promise.all([
+            client.getLogs({ address: AGENT_NFT, event: TRANSFER, args: { from: ZERO }, fromBlock: 0n }),
+            client.getLogs({ address: AGENT_NFT, event: TRANSFER, fromBlock: 0n }),
+            client.getLogs({ address: ROYALTY, event: RUN, fromBlock: 0n }),
+          ]);
           const mints     = mintLogs.length;
-          const transfers = transferLogs.length - mintLogs.length;
+          const transfers = allTransferLogs.length - mintLogs.length;
           const runs      = royaltyLogs.length;
           const royalty   = royaltyLogs.reduce((acc, l) => acc + l.args.royaltyPaid, 0n);
 
           $('m-mints').textContent     = mints.toLocaleString();
           $('m-transfers').textContent = transfers.toLocaleString();
           $('m-runs').textContent      = runs.toLocaleString();
-          $('m-royalty').textContent   = formatEther(royalty) + ' 0G';
-          status.textContent = 'Live. Last fetched ' + new Date().toLocaleTimeString();
+          $('m-royalty').textContent   = Number(formatEther(royalty)).toFixed(4) + ' 0G';
+          status.textContent = 'Live — last fetched ' + new Date().toLocaleTimeString();
         } catch (err) {
           status.textContent = 'RPC error: ' + (err.message ?? err);
+          dot.style.background = 'var(--bad)';
         }
       }
       refresh();

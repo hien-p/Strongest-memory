@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const STATIC_ROUTES = ['verify', 'metrics', 'leaderboard', 'logs'] as const;
+const STATIC_ROUTES = ['verify', 'metrics', 'leaderboard', 'logs', '_shared'] as const;
 
 const MIME: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
