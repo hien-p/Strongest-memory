@@ -2,12 +2,13 @@ import { lazy, Suspense, type ReactNode } from 'react';
 
 // Lazy-load each WebGL/canvas effect — bundle weight only kicks in when the
 // section scrolls into view (via Suspense).
-const ShaderCard = lazy(() => import('@/components/react-bits/shader-card'));
+const ShaderWaves = lazy(() => import('@/components/react-bits/shader-waves'));
 const ChromaCard = lazy(() => import('@/components/react-bits/chroma-card'));
 const AuroraBlur = lazy(() => import('@/components/react-bits/aurora-blur'));
 const AIBlob = lazy(() => import('@/components/react-bits/ai-blob'));
 const HalftoneWave = lazy(() => import('@/components/react-bits/halftone-wave'));
 const ColorLoops = lazy(() => import('@/components/react-bits/color-loops'));
+const AgenticBall = lazy(() => import('@/components/react-bits/agentic-ball'));
 
 interface CardShellProps {
   className?: string;
@@ -67,7 +68,7 @@ export function Bento() {
           body="Agent state — SOUL, memory, skills — is encrypted client-side with HKDF-derived keys before upload to 0G Storage. The Merkle root becomes the iNFT's metadataHash. Storage providers store ciphertext and never see plaintext."
           bg={
             <Suspense fallback={null}>
-              <ShaderCard className="h-full w-full" />
+              <ShaderWaves className="h-full w-full" />
             </Suspense>
           }
         />

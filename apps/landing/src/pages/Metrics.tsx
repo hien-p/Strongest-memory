@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPublicClient, http, defineChain, formatEther, parseAbiItem } from 'viem';
 import { Layout } from '@/components/Layout';
+import { RouteBackground } from '@/components/RouteBackground';
 
 const aristotle = defineChain({
   id: 16661,
@@ -68,6 +69,7 @@ export default function Metrics() {
 
   return (
     <Layout>
+      <RouteBackground variant="metrics" />
       <main className="relative mx-auto max-w-[880px] px-6 pb-20 pt-8 sm:px-10">
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-normal tracking-tight rgb-text-glitch">Live metrics</h1>

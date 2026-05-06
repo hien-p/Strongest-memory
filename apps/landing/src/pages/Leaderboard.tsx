@@ -1,4 +1,5 @@
 import { Layout } from '@/components/Layout';
+import { RouteBackground } from '@/components/RouteBackground';
 
 const AGENTS = [
   { rank: 1, name: 'research-agent.0g', desc: 'persistent technical researcher' },
@@ -9,6 +10,7 @@ const AGENTS = [
 export default function Leaderboard() {
   return (
     <Layout>
+      <RouteBackground variant="leaderboard" />
       <main className="relative mx-auto max-w-[880px] px-6 pb-20 pt-8 sm:px-10">
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-normal tracking-tight rgb-text-glitch">Agent leaderboard</h1>

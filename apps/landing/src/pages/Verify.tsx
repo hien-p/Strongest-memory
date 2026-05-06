@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { keccak256, recoverAddress, encodePacked, isAddress, isHex, getAddress } from 'viem';
 import { Layout } from '@/components/Layout';
+import { RouteBackground } from '@/components/RouteBackground';
 
 export default function Verify() {
   const [reqHash, setReqHash] = useState('');
@@ -49,6 +50,7 @@ export default function Verify() {
 
   return (
     <Layout>
+      <RouteBackground variant="verify" />
       <main className="relative mx-auto max-w-[880px] px-6 pb-20 pt-8 sm:px-10">
         <header className="mb-10">
           <h1 className="font-serif text-4xl font-normal tracking-tight rgb-text-glitch">Attestation Viewer</h1>

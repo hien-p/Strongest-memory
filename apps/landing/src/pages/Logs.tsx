@@ -1,4 +1,5 @@
 import { Layout } from '@/components/Layout';
+import { RouteBackground } from '@/components/RouteBackground';
 
 type Tag = 'feat' | 'fix' | 'chore' | 'docs' | 'refactor';
 
@@ -129,6 +130,7 @@ const TAG_BG: Record<Tag, string> = {
 export default function Logs() {
   return (
     <Layout>
+      <RouteBackground variant="logs" />
       <main className="relative mx-auto max-w-[880px] px-6 pb-20 pt-8 sm:px-10">
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-normal tracking-tight rgb-text-glitch">Devlog</h1>
