@@ -1,10 +1,26 @@
 import { Layout } from '@/components/Layout';
 import { RouteBackground } from '@/components/RouteBackground';
 
-const AGENTS = [
-  { rank: 1, name: 'research-agent.0g', desc: 'persistent technical researcher' },
-  { rank: 2, name: 'dev-orchestrator.0g', desc: '2-tier coding helper' },
-  { rank: 3, name: 'funding-arb.0g', desc: 'Pacifica funding-rate watcher' },
+interface Agent {
+  rank: number;
+  name: string;
+  desc: string;
+  tokenId?: number;
+  minted: boolean;
+  txHash?: string;
+}
+
+const AGENTS: Agent[] = [
+  {
+    rank: 1,
+    name: 'dev-orchestrator.0g',
+    desc: '2-tier coding helper',
+    tokenId: 0,
+    minted: true,
+    txHash: '0x0efa55101cc1e7890b7fc951c0898e981a97c02fac354fb9a9cd7d162f08e737',
+  },
+  { rank: 2, name: 'research-agent.0g', desc: 'persistent technical researcher', minted: false },
+  { rank: 3, name: 'funding-arb.0g', desc: 'Pacifica funding-rate watcher', minted: false },
 ];
 
 export default function Leaderboard() {
@@ -50,7 +66,19 @@ export default function Leaderboard() {
                   <td>
                     <span className="rb-rank">{a.rank}</span>
                     <span className="rb-agent">{a.name}</span>
-                    <span className="rb-pill ml-2">demo</span>
+                    {a.minted && a.txHash ? (
+                      <a
+                        href={`https://chainscan-galileo.0g.ai/tx/${a.txHash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rb-pill ml-2"
+                        style={{ background: 'rgba(34,197,94,0.18)', color: '#86efac', borderColor: 'rgba(34,197,94,0.3)' }}
+                      >
+                        tokenId {a.tokenId} ↗
+                      </a>
+                    ) : (
+                      <span className="rb-pill ml-2">pending</span>
+                    )}
                   </td>
                   <td className="text-white/60">{a.desc}</td>
                   <td className="rb-num text-white/40">—</td>

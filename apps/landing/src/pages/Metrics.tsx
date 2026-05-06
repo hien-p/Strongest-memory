@@ -17,11 +17,15 @@ const galileo = defineChain({
 // Deployed 2026-05-06 on Galileo via forge script Deploy.s.sol.
 const AGENT_NFT = '0x32F18767a2b8773CA76D5D09D2B4339454d46131' as const;
 const ROYALTY = '0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06' as const;
-const ZERO = '0x0000000000000000000000000000000000000000' as const;
 const CHAIN = galileo;
 
-const TRANSFER = parseAbiItem(
-  'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+// ERC-7857 has its own event names (Minted / Transferred) that don't match
+// the standard ERC-721 Transfer signature.
+const MINTED = parseAbiItem(
+  'event Minted(uint256 indexed _tokenId, address indexed _creator, address indexed _owner, bytes32[] _dataHashes, string[] _dataDescriptions)',
+);
+const TRANSFERRED = parseAbiItem(
+  'event Transferred(uint256 _tokenId, address indexed _from, address indexed _to)',
 );
 const RUN = parseAbiItem(
   'event InferenceRun(uint256 indexed tokenId, address indexed runner, uint256 fee, uint256 royaltyPaid, address royaltyReceiver)',
@@ -44,15 +48,15 @@ export default function Metrics() {
 
     async function refresh() {
       try {
-        const [mintLogs, allTransfers, royaltyLogs] = await Promise.all([
-          client.getLogs({ address: AGENT_NFT, event: TRANSFER, args: { from: ZERO }, fromBlock: 0n }),
-          client.getLogs({ address: AGENT_NFT, event: TRANSFER, fromBlock: 0n }),
+        const [mintLogs, transferLogs, royaltyLogs] = await Promise.all([
+          client.getLogs({ address: AGENT_NFT, event: MINTED, fromBlock: 0n }),
+          client.getLogs({ address: AGENT_NFT, event: TRANSFERRED, fromBlock: 0n }),
           client.getLogs({ address: ROYALTY, event: RUN, fromBlock: 0n }),
         ]);
         const royalty = royaltyLogs.reduce((acc, l) => acc + (l.args.royaltyPaid ?? 0n), 0n);
         setStats({
           mints: mintLogs.length,
-          transfers: allTransfers.length - mintLogs.length,
+          transfers: transferLogs.length,
           runs: royaltyLogs.length,
           royalty,
         });

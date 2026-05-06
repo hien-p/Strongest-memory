@@ -1,0 +1,25 @@
+{
+  "name": "@strongest/api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cloudflare Worker that proxies the React frontend to 0G Compute Sealed Inference. Deployed separately from the landing Worker.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@0glabs/0g-serving-broker": "^0.7.8",
+    "ethers": "^6.16.0",
+    "hono": "^4.12.16"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250718.0",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.90.0"
+  }
+}

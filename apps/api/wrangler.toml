@@ -1,0 +1,30 @@
+# Cloudflare Worker — strongest API (sealed inference proxy).
+# Deployed independently from the landing Worker. Runs on Cloudflare's V8 isolate
+# runtime, so all code in src/ must be ESM, no node:* imports, no fs.
+#
+# Real secrets are set with `wrangler secret put DEPLOYER_PRIVATE_KEY` etc.
+# `[vars]` here is for non-secret config only.
+
+name = "strongest-api"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+# nodejs_compat: the 0G broker SDK + ethers v6 internally reference some
+# node built-ins (Buffer, crypto, stream). Workers' Node.js compat layer
+# polyfills them. Without this flag the Worker will fail to bundle.
+
+[vars]
+CHAIN_ID = "16602"
+ZG_RPC_URL = "https://evmrpc-testnet.0g.ai"
+AGENT_NFT_ADDRESS = "0x32F18767a2b8773CA76D5D09D2B4339454d46131"
+ROYALTY_HOOK_ADDRESS = "0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06"
+# MOCK = "1" enables the local-dev stub. Override per-environment with
+# `wrangler dev --var MOCK:1` or set it in [env.dev.vars].
+MOCK = "0"
+
+[dev]
+port = 8788
+
+# Secrets (set via `wrangler secret put`):
+#   DEPLOYER_PRIVATE_KEY  — hex private key that funds the broker ledger
+#   ZG_COMPUTE_PROVIDER   — provider address to route inference through
