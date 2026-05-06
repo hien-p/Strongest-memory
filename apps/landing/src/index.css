@@ -192,3 +192,186 @@
   }
   .fade-rise { opacity: 1; transform: none; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Sub-page utility classes (rb-*) — used across Verify / Metrics / Leaderboard
+   / Logs. Local equivalent of the old apps/web/_shared/strongest.css.
+   ───────────────────────────────────────────────────────────────────────────── */
+.rb-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.4rem 1.5rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.rb-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.rb-card input,
+.rb-card textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font: 13px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.rb-card input:focus,
+.rb-card textarea:focus {
+  border-color: #0ea5e9;
+  background: rgba(0, 0, 0, 0.6);
+}
+.rb-card input::placeholder,
+.rb-card textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
+.rb-card textarea { min-height: 100px; resize: vertical; }
+
+.rb-btn {
+  display: inline-block;
+  font: 600 0.95rem/1 ui-sans-serif, system-ui, sans-serif;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  color: white;
+}
+.rb-btn:hover { transform: translateY(-1px); }
+.rb-btn-primary {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.rb-btn-primary:hover { background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 100%); }
+.rb-btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.7);
+}
+.rb-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+}
+
+.rb-result {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace;
+  color: white;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.rb-result.ok { border-color: rgba(34, 197, 94, 0.5); background: rgba(34, 197, 94, 0.05); }
+.rb-result.bad { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.05); }
+
+.badge {
+  display: inline-block;
+  padding: 0.18em 0.6em;
+  border-radius: 4px;
+  font: 600 0.7rem/1.4 ui-sans-serif, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge.ok { background: rgba(34, 197, 94, 0.18); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+.badge.bad { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+.rb-stat {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.rb-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(14, 165, 233, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.rb-stat-value {
+  font: 600 2.5rem/1.05 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: -0.02em;
+  color: white;
+  position: relative;
+  margin-top: 0.6rem;
+}
+
+.rb-live-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 0.55rem;
+  vertical-align: middle;
+  animation: rb-live-pulse 2s ease-in-out infinite;
+}
+.rb-live-live { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.5); }
+.rb-live-warn { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+.rb-live-bad  { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+@keyframes rb-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.rb-table-wrap {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rb-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rb-table th, .rb-table td {
+  padding: 0.95rem 1.1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.rb-table th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.2);
+}
+.rb-table tr:last-child td { border-bottom: 0; }
+.rb-table tr:hover td { background: rgba(255, 255, 255, 0.04); }
+.rb-num { text-align: right; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.rb-rank { display: inline-block; width: 1.5rem; color: rgba(255, 255, 255, 0.55); font-variant-numeric: tabular-nums; }
+.rb-agent { font: 600 0.95rem/1 ui-monospace, "SF Mono", Menlo, monospace; color: white; }
+
+.rb-pill {
+  display: inline-block;
+  padding: 0.18em 0.6em;
+  border-radius: 4px;
+  font: 600 0.7rem/1.4 ui-sans-serif, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rb-code {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  font: 0.86em ui-monospace, "SF Mono", Menlo, monospace;
+}

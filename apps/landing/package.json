@@ -12,14 +12,22 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.6.1",
+    "clsx": "^2.1.1",
+    "motion": "^12.38.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "tailwind-merge": "^2.5.5",
+    "three": "^0.184.0",
+    "viem": "^2.21.50"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.184.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "@tailwindcss/vite": "^4.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.6.3",
     "vite": "^6.0.3"

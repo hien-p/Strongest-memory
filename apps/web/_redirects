@@ -1,0 +1,4 @@
+# Cloudflare Pages: any unknown path falls back to /index.html so the React
+# Router SPA can take over. /verify, /metrics, /leaderboard, /logs all resolve
+# to React routes inside the bundle.
+/*    /index.html   200
