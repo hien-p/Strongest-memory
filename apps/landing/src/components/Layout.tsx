@@ -4,7 +4,11 @@ import { NavLink, Link } from 'react-router-dom';
 // Heavy WebGL components — lazy-loaded so the initial paint isn't blocked
 // by the three.js bundle.
 const SilkWaves = lazy(() => import('@/components/react-bits/silk-waves'));
-const GlassCursor = lazy(() => import('@/components/react-bits/glass-cursor'));
+// NOTE: GlassCursor was removed — its default `src` prop loads an Unsplash
+// mountain photo as the glass-refraction texture, which renders as a
+// full-page banner at the top of the viewport before any cursor activity.
+// We can re-enable it later with a custom `src` (e.g. a 1×1 transparent
+// PNG or a dark-themed texture) if we want the cursor effect back.
 
 const NAV = [
   { to: '/verify', label: 'verify' },
@@ -56,11 +60,6 @@ export function Layout({ children, hideBackground = false, topBanner }: LayoutPr
             'repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(255,255,255,0.06) 2px, rgba(255,255,255,0.06) 4px)',
         }}
       />
-
-      {/* Glass cursor — metaball trail with refraction. Lazy-loaded; client-only. */}
-      <Suspense fallback={null}>
-        <GlassCursor />
-      </Suspense>
 
       {/* ── Optional full-bleed top banner (e.g. hackathon) ── */}
       {topBanner && <div className="relative z-30 w-full">{topBanner}</div>}

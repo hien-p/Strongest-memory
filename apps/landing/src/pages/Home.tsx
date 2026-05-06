@@ -2,43 +2,23 @@ import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import StaggeredText from '@/components/react-bits/staggered-text';
 
-const HackathonBanner = () => (
-  <a
-    href="https://www.hackquest.io/hackathons/0G-APAC-Hackathon"
-    target="_blank"
-    rel="noreferrer"
-    aria-label="0G APAC Hackathon — official banner"
-    className="group relative block w-full overflow-hidden"
-  >
-    <img
-      src="https://assets.hackquest.io/hackathons/Ks0ghXz8wLc-a0DMsIesx.png"
-      alt="0G APAC Hackathon · $150K prize pool · March 19 → May 16 2026"
-      loading="eager"
-      decoding="async"
-      className="block h-auto w-full"
-    />
-    {/* Subtle bottom fade so the banner blends into the dark page below. */}
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#0a0a14]" />
-    {/* Click hint pill on hover. */}
-    <span className="pointer-events-none absolute bottom-6 right-6 rounded-full bg-black/70 px-4 py-2 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-white/90 opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100">
-      visit hackquest →
-    </span>
-  </a>
-);
-
 export default function Home() {
   return (
-    <Layout topBanner={<HackathonBanner />}>
-      <section className="relative mx-auto flex min-h-[calc(100vh-260px)] max-w-[1280px] flex-col items-center justify-center px-6 py-12 text-center sm:px-10">
-        <p
-          className="fade-rise mb-7 font-sans text-[0.7rem] uppercase tracking-[0.45em] text-white/55 sm:text-xs"
-          style={{ animationDelay: '0.05s' }}
+    <Layout>
+      <section className="relative mx-auto flex min-h-[calc(100vh-160px)] max-w-[1280px] flex-col items-center justify-center px-6 py-12 text-center sm:px-10">
+        {/* Small hackathon badge — replaces the heavy banner image. */}
+        <a
+          href="https://www.hackquest.io/hackathons/0G-APAC-Hackathon"
+          target="_blank"
+          rel="noreferrer"
+          className="fade-rise mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 font-sans text-xs uppercase tracking-[0.25em] text-white/75 backdrop-blur-md transition-colors hover:border-sky-400/40 hover:text-white"
+          style={{ animationDelay: '0s' }}
         >
-          OpenClaw × 0G · Track 1 · 0G APAC Hackathon
-        </p>
+          <span className="h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(14,165,233,0.7)]" />
+          0G APAC Hackathon · Track 1 · $150K Prize Pool
+          <span className="opacity-50">↗</span>
+        </a>
 
-        {/* StaggeredText doesn't accept a style prop — set fontSize via the
-            Tailwind arbitrary value syntax in className. */}
         <StaggeredText
           text={'Own the brain,\nnot the receipt.'}
           as="h1"
