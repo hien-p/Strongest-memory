@@ -9,9 +9,11 @@ const AgenticBall = lazy(() => import('@/components/react-bits/agentic-ball'));
 type Variant = 'verify' | 'metrics' | 'leaderboard' | 'logs';
 
 /**
- * Per-route decorative background. Sits behind the page's content card,
- * fixed-position so it doesn't scroll with the page. Each route gets its
- * own React Bits effect tinted to fit the strongest palette.
+ * Per-route decorative background. Sits behind the page content,
+ * fixed-position and FULL viewport so there are no hard edges in the
+ * middle of the screen. Each effect is composited via mix-blend-screen
+ * + a radial mask that fades the accent toward the viewport corners,
+ * so it reads as a glow rather than a clipped panel.
  *
  * The Layout's SilkWaves still renders behind everything — these accents
  * compose on top of that for a richer, route-specific feel.
@@ -21,25 +23,45 @@ export function RouteBackground({ variant }: { variant: Variant }) {
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
       <Suspense fallback={null}>
         {variant === 'verify' && (
-          <div className="absolute right-[-15%] top-[8%] h-[640px] w-[640px] opacity-70 mix-blend-screen">
-            <AgenticBall />
+          // Sky-blue agentic orb in the upper-right; soft mask fades it
+          // out toward the bottom-left where forms live.
+          <div
+            className="absolute inset-0 opacity-65 mix-blend-screen"
+            style={{
+              maskImage: 'radial-gradient(60% 60% at 75% 25%, black 0%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(60% 60% at 75% 25%, black 0%, transparent 75%)',
+            }}
+          >
+            <div className="absolute right-[-15%] top-[-5%] h-[720px] w-[720px]">
+              <AgenticBall />
+            </div>
           </div>
         )}
 
         {variant === 'metrics' && (
-          <div className="absolute inset-0 opacity-25 mix-blend-screen">
+          // Halftone dot grid full-screen, dimmed to keep stat numbers crisp.
+          <div className="absolute inset-0 opacity-20 mix-blend-screen">
             <HalftoneWave className="h-full w-full" />
           </div>
         )}
 
         {variant === 'leaderboard' && (
-          <div className="absolute inset-0 opacity-50 mix-blend-screen">
+          // Color loops behind the table — gentler opacity so rows stay legible.
+          <div className="absolute inset-0 opacity-35 mix-blend-screen">
             <ColorLoops className="h-full w-full" />
           </div>
         )}
 
         {variant === 'logs' && (
-          <div className="absolute right-[-10%] top-[-5%] h-[820px] w-[820px] opacity-65">
+          // Aurora glow concentrated at the top-right with a soft radial fade,
+          // so there's no visible 'box edge' running down the middle of the page.
+          <div
+            className="absolute inset-0 opacity-65"
+            style={{
+              maskImage: 'radial-gradient(70% 70% at 80% 15%, black 0%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(70% 70% at 80% 15%, black 0%, transparent 75%)',
+            }}
+          >
             <AuroraBlur className="h-full w-full" />
           </div>
         )}
