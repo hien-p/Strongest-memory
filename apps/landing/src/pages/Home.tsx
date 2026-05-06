@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
-import GlitchText from '@/components/react-bits/glitch-text';
+import StaggeredText from '@/components/react-bits/staggered-text';
 
 export default function Home() {
   return (
@@ -10,34 +10,21 @@ export default function Home() {
           OpenClaw × 0G · Track 1 · 0G APAC Hackathon
         </p>
 
-        <div className="fade-rise w-full max-w-5xl" style={{ animationDelay: '0s' }}>
-          {/* GlitchText auto-fits to its container; we control size via the
-              wrapping div's height (clamps from 54 → 144 px). Two lines. */}
-          <div className="h-[clamp(54px,11vw,144px)] w-full">
-            <GlitchText
-              text="Own the brain,"
-              colors={['#0ea5e9', '#a855f7', '#ffffff']}
-              textColor="#ffffff"
-              autoFit
-              fontWeight="400"
-              className="font-serif"
-            />
-          </div>
-          <div className="h-[clamp(54px,11vw,144px)] w-full">
-            <GlitchText
-              text="not the receipt."
-              colors={['#0ea5e9', '#a855f7', '#ffffff']}
-              textColor="#ffffff"
-              autoFit
-              fontWeight="400"
-              className="font-serif"
-            />
-          </div>
-        </div>
+        {/* StaggeredText doesn't accept a style prop — set fontSize via the
+            Tailwind arbitrary value syntax in className. */}
+        <StaggeredText
+          text={'Own the brain,\nnot the receipt.'}
+          as="h1"
+          segmentBy="chars"
+          delay={28}
+          duration={0.8}
+          blur
+          className="font-serif font-normal leading-[0.95] tracking-[-0.04em] text-white text-[clamp(48px,9vw,124px)]"
+        />
 
         <p
           className="fade-rise mt-8 max-w-2xl font-sans leading-relaxed text-white/85 rgb-text-glitch"
-          style={{ fontSize: 'clamp(15px, 1.4vw, 20px)', animationDelay: '0.2s' }}
+          style={{ fontSize: 'clamp(15px, 1.4vw, 20px)', animationDelay: '0.6s' }}
         >
           For builders whose agents shouldn't die with the platform. Encrypted memory on 0G Storage, sealed inference in
           TEE, royalties on every call. ERC-7857 iNFTs that hold the brain — not just a token.
@@ -45,7 +32,7 @@ export default function Home() {
 
         <div
           className="fade-rise mt-10 flex flex-col items-center gap-4 sm:flex-row"
-          style={{ animationDelay: '0.4s' }}
+          style={{ animationDelay: '0.9s' }}
         >
           <Link
             to="/verify"
