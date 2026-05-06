@@ -3,16 +3,22 @@ import { createPublicClient, http, defineChain, formatEther, parseAbiItem } from
 import { Layout } from '@/components/Layout';
 import { RouteBackground } from '@/components/RouteBackground';
 
-const aristotle = defineChain({
-  id: 16661,
-  name: '0G Aristotle',
+// Galileo testnet (chain 16602). Will switch to Aristotle (16661) at the
+// Day 4 mainnet checkpoint.
+const galileo = defineChain({
+  id: 16602,
+  name: '0G Galileo Testnet',
   nativeCurrency: { name: '0G', symbol: '0G', decimals: 18 },
-  rpcUrls: { default: { http: ['https://evmrpc.0g.ai'] } },
+  rpcUrls: { default: { http: ['https://evmrpc-testnet.0g.ai'] } },
+  blockExplorers: { default: { name: 'chainscan-galileo', url: 'https://chainscan-galileo.0g.ai' } },
+  testnet: true,
 });
 
-const AGENT_NFT = '0x0000000000000000000000000000000000000000' as const;
-const ROYALTY = '0x0000000000000000000000000000000000000000' as const;
+// Deployed 2026-05-06 on Galileo via forge script Deploy.s.sol.
+const AGENT_NFT = '0x32F18767a2b8773CA76D5D09D2B4339454d46131' as const;
+const ROYALTY = '0x971a0A685c3b1B7dCb33FBeeA55cEe851D924c06' as const;
 const ZERO = '0x0000000000000000000000000000000000000000' as const;
+const CHAIN = galileo;
 
 const TRANSFER = parseAbiItem(
   'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
@@ -34,12 +40,7 @@ export default function Metrics() {
   const [statusKind, setStatusKind] = useState<'live' | 'warn' | 'bad'>('live');
 
   useEffect(() => {
-    if (AGENT_NFT === ZERO) {
-      setStatus('Contracts not yet deployed on Aristotle. Counters go live on Day 4.');
-      setStatusKind('warn');
-      return;
-    }
-    const client = createPublicClient({ chain: aristotle, transport: http() });
+    const client = createPublicClient({ chain: CHAIN, transport: http() });
 
     async function refresh() {
       try {
@@ -74,10 +75,26 @@ export default function Metrics() {
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-normal tracking-tight rgb-text-glitch">Live metrics</h1>
           <p className="mt-3 max-w-prose text-sm leading-relaxed text-white/65">
-            Counters fetched directly from the Aristotle <code className="rb-code">AgentNFT</code> +{' '}
-            <code className="rb-code">RoyaltyHook</code> contracts via a public 0G RPC endpoint. No centralized indexer;
-            the page reads <code className="rb-code">Transfer</code> and <code className="rb-code">InferenceRun</code>{' '}
-            events and aggregates client-side.
+            Counters fetched directly from the Galileo testnet <code className="rb-code">AgentNFT</code> +{' '}
+            <code className="rb-code">RoyaltyHook</code> contracts via the 0G RPC. No centralized indexer; the page
+            reads <code className="rb-code">Transfer</code> and <code className="rb-code">InferenceRun</code> events
+            and aggregates client-side. Block explorer:{' '}
+            <a
+              href={`https://chainscan-galileo.0g.ai/address/${AGENT_NFT}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sky-400 hover:underline"
+            >
+              AgentNFT
+            </a>{' '}·{' '}
+            <a
+              href={`https://chainscan-galileo.0g.ai/address/${ROYALTY}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sky-400 hover:underline"
+            >
+              RoyaltyHook
+            </a>.
           </p>
         </header>
 
