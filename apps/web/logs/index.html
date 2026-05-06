@@ -85,6 +85,24 @@
         Tag values: feat | fix | chore | docs | refactor
       -->
 
+      <article class="log-card" data-date="2026-05-06">
+        <header>
+          <time datetime="2026-05-06">2026-05-06</time>
+          <span class="log-tag" data-tag="refactor">refactor</span>
+        </header>
+        <h3>Landing reborn as a full-bleed website (no more 600×800 card)</h3>
+        <p>The original spec described a 3:4 social-card frame — great for an Instagram post, wrong for a hackathon submission URL judges will scroll. Refactored to a real website: video + VHS overlays cover the whole viewport, top nav (<code>verify</code> · <code>metrics</code> · <code>leaderboard</code> · <code>devlog</code> · <code>github</code>), hero with new headline (<em>"Own the brain, / not the receipt."</em>) and revised body copy that ends with <em>"ERC-7857 iNFTs that hold the brain — not just a token."</em>, two CTAs (Begin Journey → <code>/verify</code>, See live metrics → <code>/metrics</code>), and a footer with the canonical Velorah® mark + a link back to <code>strongest.pages.dev</code>. Typography scales via <code>clamp(...vw, ...)</code> so headline goes from 48px on phones to 128px on big screens.</p>
+      </article>
+
+      <article class="log-card" data-date="2026-05-06">
+        <header>
+          <time datetime="2026-05-06">2026-05-06</time>
+          <span class="log-tag" data-tag="feat">feat</span>
+        </header>
+        <h3>Vite dev middleware: sub-routes work locally too</h3>
+        <p>Clicking <code>/verify</code> / <code>/metrics</code> / <code>/leaderboard</code> / <code>/logs</code> on <code>localhost:5174</code> used to fall back to the SPA index — only production at <code>strongest.pages.dev</code> served those static pages. New <code>serveStaticSubRoutes</code> Vite plugin in <code>vite.config.ts</code> intercepts those URL prefixes during dev and reads the corresponding file from <code>apps/web/&lt;subdir&gt;/index.html</code>. Includes a path-containment check so requests can't escape the static dir. Production behavior unchanged — Cloudflare Pages still serves these paths natively.</p>
+      </article>
+
       <article class="log-card" data-date="2026-05-05">
         <header>
           <time datetime="2026-05-05">2026-05-05</time>
