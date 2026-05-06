@@ -17,9 +17,11 @@ export interface LayoutProps {
   children: ReactNode;
   /** Hide the WebGL background on pages that supply their own. */
   hideBackground?: boolean;
+  /** Optional content rendered above the top nav (full-width edge-to-edge). */
+  topBanner?: ReactNode;
 }
 
-export function Layout({ children, hideBackground = false }: LayoutProps) {
+export function Layout({ children, hideBackground = false, topBanner }: LayoutProps) {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden text-white">
       {/* SilkWaves — fixed full-viewport background. The body owns the
@@ -59,6 +61,9 @@ export function Layout({ children, hideBackground = false }: LayoutProps) {
       <Suspense fallback={null}>
         <GlassCursor />
       </Suspense>
+
+      {/* ── Optional full-bleed top banner (e.g. hackathon) ── */}
+      {topBanner && <div className="relative z-30 w-full">{topBanner}</div>}
 
       {/* ── Top nav ── */}
       <header className="relative z-30 mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 sm:px-10">
